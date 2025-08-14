@@ -24,6 +24,7 @@
   label.option{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0f1520;cursor:pointer}
   label.option:hover{border-color:#2b3a4f}
   input[type=radio],input[type=checkbox]{width:18px;height:18px}
+  select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0f1520;color:var(--text)}
   .grid{display:grid;gap:10px}
   @media(min-width:700px){.cols-2{grid-template-columns:1fr 1fr}}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
@@ -48,12 +49,12 @@
   <header>
     <div>
       <div class="title">ShipStation Platform and Plan Recommender</div>
-      <div class="subtitle">Mobile friendly guided discovery for field reps · Inclusive scoring (no upsell)</div>
+      <div class="subtitle">Mobile friendly guided discovery for field reps · Requirement based plan selection</div>
     </div>
     <div class="row">
       <span class="pill">UI or API Gate</span>
       <span class="pill">Free • Starter • Standard • Premium</span>
-      <span class="pill">Tie break = Lowest Cost</span>
+      <span class="pill">Shows what forced higher plan</span>
     </div>
   </header>
 
@@ -103,17 +104,27 @@
       <div class="grid cols-2">
         <label class="option"><input type="radio" name="users" value="1 User"> <span>1 User</span></label>
         <label class="option"><input type="radio" name="users" value="3 Users"> <span>3 Users</span></label>
-        <label class="option"><input type="radio" name="users" value="10 Users"> <span>10 Users</span></label>
-        <label class="option"><input type="radio" name="users" value="15 Users"> <span>15 Users</span></label>
+        <label class="option"><input type="radio" name="users" value="4-10 Users"> <span>4-10 Users</span></label>
+        <label class="option"><input type="radio" name="users" value="11-15 Users"> <span>11-15 Users</span></label>
       </div>
     </fieldset>
     <fieldset>
       <legend>How many shipments each month?</legend>
-      <div class="grid cols-2">
-        <label class="option"><input type="radio" name="shipments" value="10 or less"> <span>10 or less</span></label>
-        <label class="option"><input type="radio" name="shipments" value="5,000 or less"> <span>5,000 or less</span></label>
-        <label class="option"><input type="radio" name="shipments" value="5,000+"> <span>5,000+</span></label>
-      </div>
+      <select name="shipments" id="shipments">
+        <option value="">Select...</option>
+        <option>10</option>
+        <option>50</option>
+        <option>100</option>
+        <option>500</option>
+        <option>1,000</option>
+        <option>2,000</option>
+        <option>5,000</option>
+        <option>7,500</option>
+        <option>10,000</option>
+        <option>15,000</option>
+        <option>20,000</option>
+        <option>>20,000</option>
+      </select>
     </fieldset>
   </section>
 
@@ -196,7 +207,7 @@
       </div>
     </fieldset>
     <div class="actions">
-      <button class="btn" id="btn-calc">Calculate Recommendation</button>
+      <button class="btn" id="btn-calc">Show Recommendation</button>
       <button class="btn secondary" id="btn-reset" type="button">Reset</button>
     </div>
   </section>
@@ -205,13 +216,13 @@
   <section class="card result" id="sec-result">
     <div class="section-title">Recommendation</div>
     <div class="banner" id="rec-banner"></div>
-    <div class="score-badges" id="score-badges"></div>
+    <div class="score-badges" id="driver-badges"></div>
     <table id="recap-table"></table>
     <div class="actions">
       <button class="btn link" id="btn-copy" type="button">Copy Summary</button>
       <button class="btn link" id="btn-download" type="button">Download JSON</button>
     </div>
-    <div class="subtitle muted" style="margin-top:10px">Tie break rule: if scores are equal, the lowest cost plan is recommended (Free then Starter then Standard then Premium).</div>
+    <div class="subtitle muted" style="margin-top:10px">We pick the lowest cost plan that satisfies all selected requirements. Drivers list shows which features required the recommended plan.</div>
   </section>
 </div>
 
@@ -221,108 +232,214 @@
   var qa = function(sel,ctx){return Array.prototype.slice.call((ctx||document).querySelectorAll(sel))};
   var show = function(el,yes){ el.classList.toggle('hidden', !yes); };
 
-  var secAPI = q('#sec-api');
-  var secUIUsers = q('#sec-ui-users');
-  var secUIFeat = q('#sec-ui-features');
-  var secAddons = q('#sec-addons');
-  var secResult = q('#sec-result');
+  var PLAN_ORDER = ['Free','Starter','Standard','Premium'];
+  var PLAN_INDEX = {Free:0, Starter:1, Standard:2, Premium:3};
 
+  // Pricing loaded from your spreadsheet (plan and shipment band specific)
+  // Keys for shipment bands are normalized like: "10","50","100","500","1000","2000","5000","7500","10000","15000","20000",">20000"
+  var PRICES = {
+    "Free":    {"10": 0.00},
+    "Starter": {"50":14.99,"100":29.99,"500":39.99,"1000":79.99,"2000":119.99,"5000":174.99},
+    "Standard":{"50":29.99,"100":59.99,"500":89.99,"1000":149.99,"2000":174.99,"5000":249.99,"7500":299.99,"10000":599.99,"15000":649.99,"20000":799.99,">20000":"Custom Pricing"},
+    "Premium": {"50":349.99,"100":399.99,"500":449.99,"1000":599.99,"2000":699.99,"5000":799.99,"7500":949.99,"10000":1099.99,"15000":1349.99,"20000":1499.99,">20000":"Custom Pricing"}
+  };
+
+  // Visibility based on platform
   qa('input[name=platform]').forEach(function(r){
     r.addEventListener('change', function(){
       var v = q('input[name=platform]:checked');
       v = v ? v.value : '';
-      show(secAPI, v==='API');
-      show(secUIUsers, v==='UI');
-      show(secUIFeat, v==='UI');
-      show(secAddons, true);
-      secResult.classList.remove('show');
-      window.scrollTo({top:secAddons.offsetTop - 12, behavior:'smooth'});
+      show(q('#sec-api'), v==='API');
+      show(q('#sec-ui-users'), v==='UI');
+      show(q('#sec-ui-features'), v==='UI');
+      show(q('#sec-addons'), true);
+      q('#sec-result').classList.remove('show');
+      window.scrollTo({top:q('#sec-addons').offsetTop - 12, behavior:'smooth'});
     });
   });
 
-  var plans = ['Free','Starter','Standard','Premium'];
-  var scoring = {
-    users: {
-      '1 User':['Free'], '3 Users':['Starter'], '10 Users':['Standard'], '15 Users':['Premium']
-    },
-    shipments: {
-      '10 or less':['Free'], '5,000 or less':['Starter'], '5,000+':['Standard','Premium']
-    },
-    intl: { 'No':['Free','Starter'], 'Yes':['Standard','Premium'] },
-    byoa: { 'No':['Starter','Standard'], 'Yes':['Standard','Premium'] },
-    inv: {
-      'None':['Free'],
-      'Product Catalog and Inventory Grid':['Starter'],
-      'Basic Inventory Management':['Standard'],
-      'Advanced Inventory Management':['Premium']
-    },
-    wm: {
-      'Standard packing slips':['Free'],
-      'Standard Pick Lists and Packing Slips':['Starter'],
-      'Advanced Warehouse Management':['Standard'],
-      'All Warehouse Management features':['Premium']
-    },
-    returns: { 'No':['Free','Starter'], 'Yes':['Standard','Premium'] },
-    rules: { 'No':['Free','Starter'], 'Yes':['Standard','Premium'] },
-    routing: { 'No':['Free','Starter','Standard'], 'Yes':['Premium'] },
-    rates: { 'Freemium Rate Shopper':['Free','Starter'], 'Advanced Rate Shopper':['Standard','Premium'] },
-    odbc: { 'No':['Free','Starter','Standard'], 'Yes':['Premium'] },
-    api_access: { 'No':['Free','Starter'], 'Yes':['Standard','Premium'] },
-    support: { 'No':['Free','Starter'], 'Phone Support':['Standard'], 'Dedicated AM':['Premium'] }
-  };
+  // Requirement maps: answer -> allowed plans
+  function S(){ return new Set(PLAN_ORDER); }
+  function allowed(field, value){
+    switch(field){
 
-  function calcScores(){
-    var platformInput = q('input[name=platform]:checked');
-    var platform = platformInput ? platformInput.value : '';
+      // Users → minimum plan
+      case 'users':
+        if(value==='1 User') return new Set(['Free']);
+        if(value==='3 Users') return new Set(['Starter']);
+        if(value==='4-10 Users') return new Set(['Standard']);
+        if(value==='11-15 Users') return new Set(['Premium']);
+        break;
 
-    var answers = {};
-    var fieldsUI = ['users','shipments','intl','byoa','inv','wm','returns','rules','routing','rates','odbc','api_access','support'];
-    var fieldsAPI = ['api_dev','api_3pl','api_pe'];
+      // Shipments → allowed by plan availability from your list
+      case 'shipments':
+        var n = normalizeShip(value);
+        // derive allowed plans by presence in PRICES
+        var ok = new Set();
+        PLAN_ORDER.forEach(function(p){
+          if(PRICES[p] && Object.prototype.hasOwnProperty.call(PRICES[p], n)) ok.add(p);
+        });
+        return ok;
 
-    if(platform==='UI'){
-      for(var i=0;i<fieldsUI.length;i++){
-        var f = fieldsUI[i];
-        var sel = q('input[name='+f+']:checked');
-        var val = sel ? sel.value : '';
-        if(val){ answers[f] = val; }
-      }
+      case 'intl':
+        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'byoa':
+        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Starter','Standard']);
+      case 'inv':
+        if(value==='None') return new Set(['Free']);
+        if(value==='Product Catalog and Inventory Grid') return new Set(['Starter']);
+        if(value==='Basic Inventory Management') return new Set(['Standard']);
+        if(value==='Advanced Inventory Management') return new Set(['Premium']);
+        break;
+      case 'wm':
+        if(value==='Standard packing slips') return new Set(['Free']);
+        if(value==='Standard Pick Lists and Packing Slips') return new Set(['Starter']);
+        if(value==='Advanced Warehouse Management') return new Set(['Standard']);
+        if(value==='All Warehouse Management features') return new Set(['Premium']);
+        break;
+      case 'returns':
+        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'rules':
+        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'routing':
+        return (value==='Yes') ? new Set(['Premium']) : new Set(['Free','Starter','Standard']);
+      case 'rates':
+        return (value==='Advanced Rate Shopper') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'odbc':
+        return (value==='Yes') ? new Set(['Premium']) : new Set(['Free','Starter','Standard']);
+      case 'api_access':
+        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'support':
+        if(value==='No') return new Set(['Free','Starter']);
+        if(value==='Phone Support') return new Set(['Standard']);
+        if(value==='Dedicated AM') return new Set(['Premium']);
+        break;
+
+      // API path (record only)
+      case 'api_dev':
+      case 'api_3pl':
+      case 'api_pe':
+        return S();
+
+      default:
+        return S();
     }
-    if(platform==='API'){
-      for(var j=0;j<fieldsAPI.length;j++){
-        var g = fieldsAPI[j];
-        var sel2 = q('input[name='+g+']:checked');
-        var val2 = sel2 ? sel2.value : '';
-        if(val2){ answers[g] = val2; }
-      }
-    }
-    var addons = qa('input[name=addons]:checked').map(function(c){ return c.value; });
-
-    var score = {Free:0,Starter:0,Standard:0,Premium:0};
-    if(platform==='UI'){
-      for(var key in answers){
-        var map = scoring[key] || {};
-        var tiers = map[answers[key]] || [];
-        for(var t=0;t<tiers.length;t++){ score[tiers[t]] = score[tiers[t]] + 1; }
-      }
-    }
-
-    var max = -1, winners = [];
-    for(var p=0;p<plans.length;p++){
-      var name = plans[p];
-      if(score[name] > max){ max = score[name]; winners = [name]; }
-      else if(score[name] === max){ winners.push(name); }
-    }
-    var planWinner = winners.length ? winners[0] : '';
-
-    return { platform:platform, answers:answers, addons:addons, score:score, planWinner:planWinner };
+    return S();
   }
 
-  function renderResult(){
-    var data = calcScores();
-    var platform = data.platform, answers = data.answers, addons = data.addons, score = data.score, planWinner = data.planWinner;
-    var banner = q('#rec-banner'), scores = q('#score-badges'), recap = q('#recap-table');
+  function normalizeShip(v){
+    if(!v) return '';
+    var s = String(v).trim().toLowerCase().replace(/,/g,'');
+    if(s.indexOf('>')===0 || s.indexOf('more than')===0) return '>20000';
+    return s.replace(/^0+/,'');
+  }
 
-    if(platform==='API'){
+  function calcRecommendation(){
+    var platform = (q('input[name=platform]:checked')||{}).value || '';
+
+    // Gather answers
+    var answers = {};
+    var addons = qa('input[name=addons]:checked').map(function(c){ return c.value; });
+
+    if(platform==='UI'){
+      var fields = [
+        'users','shipments','intl','byoa','inv','wm','returns','rules','routing','rates','odbc','api_access','support'
+      ];
+      fields.forEach(function(f){
+        if(f==='shipments'){
+          var val = q('#shipments').value;
+          if(val) answers[f] = val;
+        } else {
+          var sel = q('input[name='+f+']:checked');
+          if(sel && sel.value) answers[f] = sel.value;
+        }
+      });
+    } else if(platform==='API'){
+      ['api_dev','api_3pl','api_pe'].forEach(function(f){
+        var sel = q('input[name='+f+']:checked');
+        if(sel && sel.value) answers[f] = sel.value;
+      });
+    }
+
+    // Requirement based plan: pick the highest minimum required by any answer, then finalize plan
+    if(platform==='UI'){
+      var minIndexRequired = 0; // Free baseline
+      var drivers = []; // features that set or matched the final requirement
+      var finalAllowed = new Set(PLAN_ORDER); // for feasibility check too
+
+      Object.keys(answers).forEach(function(field){
+        var value = answers[field];
+        var allowedSet = allowed(field, value);
+        // Update feasibility intersection
+        finalAllowed = new Set(PLAN_ORDER.filter(function(p){ return finalAllowed.has(p) && allowedSet.has(p); }));
+        // Minimum tier this answer demands
+        var minTier = PLAN_ORDER.find(function(p){ return allowedSet.has(p); }) || 'Premium';
+        var idx = PLAN_INDEX[minTier];
+        if(idx > minIndexRequired){
+          minIndexRequired = idx;
+        }
+      });
+
+      // Recommended plan is the lowest cost plan that is at least minIndexRequired and still feasible with all answers
+      var recommended = null;
+      for(var i=minIndexRequired;i<PLAN_ORDER.length;i++){
+        var pName = PLAN_ORDER[i];
+        if(finalAllowed.has(pName)){ recommended = pName; break; }
+      }
+      // If contradiction left allowed empty, fall back to the minIndexRequired plan by order
+      if(!recommended) recommended = PLAN_ORDER[minIndexRequired];
+
+      // Identify driver features: those whose minimum tier equals the recommended plan (binding)
+      Object.keys(answers).forEach(function(field){
+        var value = answers[field];
+        var allowedSet = allowed(field, value);
+        var minTier = PLAN_ORDER.find(function(p){ return allowedSet.has(p); }) || 'Premium';
+        if(minTier === recommended){
+          drivers.push(driverLabel(field, value));
+        }
+      });
+
+      // Price lookup based on plan and shipments
+      var shipKey = normalizeShip(answers.shipments || '');
+      var price = shipKey && PRICES[recommended] ? PRICES[recommended][shipKey] : undefined;
+      var priceText = (price===undefined) ? 'N/A' : (price==='Custom Pricing' ? 'Custom Pricing' : ('$'+price.toFixed(2)+'/mo'));
+
+      return { platform:platform, answers:answers, addons:addons, recommended:recommended, drivers:drivers, priceText:priceText };
+    }
+
+    // API path
+    return { platform:platform, answers:answers, addons:addons, recommended:null, drivers:[], priceText:null };
+  }
+
+  function driverLabel(field, value){
+    var labels = {
+      users: 'Users: '+value,
+      shipments: 'Shipments per month: '+value,
+      intl: 'International Shipping: '+value,
+      byoa: 'BYOA: '+value,
+      inv: 'Inventory level: '+value,
+      wm: 'Warehouse management level: '+value,
+      returns: 'Advanced returns and exchanges: '+value,
+      rules: 'Unlimited rule automations: '+value,
+      routing: 'Auto Routing or Auto Split: '+value,
+      rates: 'Rate Shopper: '+value,
+      odbc: 'ODBC: '+value,
+      api_access: 'API Access: '+value,
+      support: 'Support: '+value,
+      api_dev: 'Developer resources: '+value,
+      api_3pl: '3PL functionality: '+value,
+      api_pe: 'Platform Elements: '+value
+    };
+    return labels[field] || (field+': '+value);
+  }
+
+  function render(){
+    var res = calcRecommendation();
+    var banner = q('#rec-banner');
+    var drivers = q('#driver-badges');
+    var recap = q('#recap-table');
+
+    if(res.platform==='API'){
       var dev = (q('input[name=api_dev]:checked')||{}).value || '—';
       var need3pl = (q('input[name=api_3pl]:checked')||{}).value || '—';
       var pe = (q('input[name=api_pe]:checked')||{}).value || '—';
@@ -331,23 +448,30 @@
         '<div><strong>Platform:</strong> ShipStation API</div>'+
         '<div class="muted">Dev resources: <strong>'+dev+'</strong> · 3PL: <strong>'+need3pl+'</strong> · Platform Elements: <strong>'+pe+'</strong></div>'+
         '<div style="margin-top:6px">Next Step: <strong>'+(partner? 'Connect with an API Partner' : 'Proceed with SS API solutioning')+'</strong></div>'+
-        '<div style="margin-top:6px">Add ons: '+(addons.length? addons.join(', ') : 'None')+'</div>';
-      scores.innerHTML = '';
-    } else if(platform==='UI'){
+        '<div style="margin-top:6px">Add ons: '+(res.addons.length? res.addons.join(', ') : 'None')+'</div>';
+      drivers.innerHTML = '';
+    } else if(res.platform==='UI'){
       banner.innerHTML =
         '<div><strong>Platform:</strong> ShipStation UI</div>'+
-        '<div><strong>Recommended Plan:</strong> '+(planWinner || '—')+'</div>'+
-        '<div style="margin-top:6px">Add ons: '+(addons.length? addons.join(', ') : 'None')+'</div>';
-      scores.innerHTML = ['Free','Starter','Standard','Premium'].map(function(n){ return '<span class="score">'+n+': '+score[n]+'</span>'; }).join('');
+        '<div><strong>Recommended Plan:</strong> '+(res.recommended || '—')+(res.priceText? ' — '+res.priceText : '')+'</div>'+
+        '<div style="margin-top:6px">Add ons: '+(res.addons.length? res.addons.join(', ') : 'None')+'</div>';
+
+      // Drivers badges
+      if(res.drivers.length){
+        drivers.innerHTML = res.drivers.map(function(d){ return '<span class="score">'+d+'</span>'; }).join('');
+      } else {
+        drivers.innerHTML = '<span class="muted">No higher plan drivers detected. Selection fits the base tier.</span>';
+      }
     } else {
       banner.innerHTML = '<div>Please select a platform to begin.</div>';
-      scores.innerHTML = '';
+      drivers.innerHTML = '';
     }
 
+    // Recap table
     var rows = [];
-    if(platform==='UI'){
+    if(res.platform==='UI'){
       rows.push(['Category','Answer']);
-      [
+      var order = [
         ['users','How many users do you need?'],
         ['shipments','How many shipments each month?'],
         ['intl','International Shipping (Non Wallet)?'],
@@ -361,15 +485,13 @@
         ['odbc','ODBC?'],
         ['api_access','API Access?'],
         ['support','Phone Support or Dedicated AM?']
-      ].forEach(function(pair){
-        var k = pair[0], label = pair[1];
-        if(answers[k]) rows.push([label, answers[k]]);
-      });
-    } else if(platform==='API'){
+      ];
+      order.forEach(function(pair){ var k=pair[0], label=pair[1]; if(res.answers[k]) rows.push([label, res.answers[k]]); });
+    } else if(res.platform==='API'){
       rows.push(['Category','Answer']);
-      if(answers.api_dev) rows.push(['Developer resources', answers.api_dev]);
-      if(answers.api_3pl) rows.push(['3PL functionality', answers.api_3pl]);
-      if(answers.api_pe) rows.push(['Platform Elements', answers.api_pe]);
+      if(res.answers.api_dev) rows.push(['Developer resources', res.answers.api_dev]);
+      if(res.answers.api_3pl) rows.push(['3PL functionality', res.answers.api_3pl]);
+      if(res.answers.api_pe) rows.push(['Platform Elements', res.answers.api_pe]);
     }
 
     recap.innerHTML = rows.length
@@ -377,34 +499,38 @@
         '<tbody>'+rows.slice(1).map(function(rw){ return '<tr><td>'+rw[0]+'</td><td>'+rw[1]+'</td></tr>'; }).join('')+'</tbody>'
       : '';
 
-    document.getElementById('sec-result').classList.add('show');
-    window.scrollTo({top:document.getElementById('sec-result').offsetTop - 12, behavior:'smooth'});
+    q('#sec-result').classList.add('show');
+    window.scrollTo({top:q('#sec-result').offsetTop - 12, behavior:'smooth'});
   }
 
-  document.getElementById('btn-calc').addEventListener('click', renderResult);
-  document.getElementById('btn-reset').addEventListener('click', function(){
+  q('#btn-calc').addEventListener('click', render);
+  q('#btn-reset').addEventListener('click', function(){
     qa('input[type=radio],input[type=checkbox]').forEach(function(i){ i.checked=false; });
-    [secAPI,secUIUsers,secUIFeat,secAddons].forEach(function(s){ s.classList.add('hidden'); });
-    secResult.classList.remove('show');
+    q('#shipments').value = '';
+    [q('#sec-api'),q('#sec-ui-users'),q('#sec-ui-features'),q('#sec-addons')].forEach(function(s){ s.classList.add('hidden'); });
+    q('#sec-result').classList.remove('show');
     window.scrollTo({top:0,behavior:'smooth'});
   });
-  document.getElementById('btn-copy').addEventListener('click', function(){
-    var d = (function(){var data = calcScores(); return { platform:data.platform, planWinner:data.planWinner, scores:data.score, addons:data.addons, answers:data.answers };})();
-    var text = (function(d){
-      if(!d.platform) return 'Please complete the questionnaire.';
-      var lines = [];
-      lines.push('Platform: '+(d.platform==='UI'?'ShipStation UI':'ShipStation API'));
-      if(d.platform==='UI'){
-        lines.push('Recommended Plan: '+d.planWinner);
-        lines.push('Scores → Free '+d.scores.Free+' | Starter '+d.scores.Starter+' | Standard '+d.scores.Standard+' | Premium '+d.scores.Premium);
-      }
+
+  q('#btn-copy').addEventListener('click', function(){
+    var r = calcRecommendation();
+    var lines = [];
+    if(!r.platform){ alert('Please complete the questionnaire.'); return; }
+    lines.push('Platform: '+(r.platform==='UI'?'ShipStation UI':'ShipStation API'));
+    if(r.platform==='UI'){
+      lines.push('Recommended Plan: '+r.recommended + (r.priceText? ' — '+r.priceText : ''));
       lines.push('');
-      lines.push('Answers:');
-      for(var k in d.answers){ lines.push('- '+k+': '+d.answers[k]); }
-      lines.push('');
-      lines.push('Add ons: ' + (d.addons.length? d.addons.join(', ') : 'None'));
-      return lines.join('\n');
-    })(d);
+      lines.push('Drivers (features that required this plan):');
+      if(r.drivers.length){ r.drivers.forEach(function(d){ lines.push('- '+d); }); }
+      else { lines.push('- None'); }
+    }
+    lines.push('');
+    lines.push('Answers:');
+    Object.keys(r.answers).forEach(function(k){ lines.push('- '+k+': '+r.answers[k]); });
+    lines.push('');
+    lines.push('Add ons: ' + (r.addons.length? r.addons.join(', ') : 'None'));
+    var text = lines.join('\n');
+
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).then(function(){ alert('Summary copied to clipboard.'); });
     } else {
@@ -412,9 +538,10 @@
       alert('Summary copied to clipboard.');
     }
   });
-  document.getElementById('btn-download').addEventListener('click', function(){
-    var d = (function(){var data = calcScores(); return { platform:data.platform, planWinner:data.planWinner, scores:data.score, addons:data.addons, answers:data.answers };})();
-    var blob = new Blob([JSON.stringify(d,null,2)], {type:'application/json'});
+
+  q('#btn-download').addEventListener('click', function(){
+    var r = calcRecommendation();
+    var blob = new Blob([JSON.stringify(r,null,2)], {type:'application/json'});
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'shipstation_recommendation.json'; a.click(); URL.revokeObjectURL(a.href);
   });
 })();
