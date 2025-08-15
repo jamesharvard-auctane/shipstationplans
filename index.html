@@ -6,13 +6,15 @@
 <title>ShipStation Platform and Plan Recommender</title>
 <style>
   :root{
-    --bg:#0b0f14; --card:#121822; --muted:#9fb3c8; --text:#e6edf3; --accent:#7cc4ff; --accent2:#4de1c1; --border:#1f2937; --focus:#7cc4ff55;
+    --bg:#0b0f14; --card:#121822; --muted:#9fb3c8; --text:#e6edf3;
+    --accent:#7cc4ff; --accent2:#4de1c1; --border:#1f2937; --focus:#7cc4ff55;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(180deg,#0b0f14,#0b1016 40%,#0b0f14)}
   .container{max-width:980px;margin:0 auto;padding:20px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .brand{height:auto;max-width:220px;width:40vw;min-width:160px}
   .title{font-size:clamp(20px,2.6vw,28px);font-weight:700}
   .subtitle{color:var(--muted);font-size:14px}
   .pill{padding:6px 10px;border-radius:999px;background:#0e1420;border:1px solid var(--border);font-size:12px;color:var(--muted)}
@@ -21,12 +23,13 @@
   .section-title{font-size:18px;font-weight:700;margin:6px 0 14px;border-left:4px solid var(--accent);padding-left:10px}
   fieldset{border:none;padding:0;margin:0 0 8px}
   legend{font-weight:600;margin-bottom:8px}
-  label.option{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0f1520;cursor:pointer}
+  label.option{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0f1520;cursor:pointer}
   label.option:hover{border-color:#2b3a4f}
-  input[type=radio],input[type=checkbox]{width:18px;height:18px}
-  select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0f1520;color:var(--text)}
+  input[type=radio],input[type=checkbox]{width:18px;height:18px;margin-top:2px}
+  .opt-title{font-weight:600}
   .grid{display:grid;gap:10px}
   @media(min-width:700px){.cols-2{grid-template-columns:1fr 1fr}}
+  select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0f1520;color:var(--text)}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
   .btn{appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;color:#061016;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 20px rgba(80,180,220,.35)}
   .btn.secondary{background:#101826;color:var(--text);border:1px solid var(--border)}
@@ -34,19 +37,27 @@
   .hidden{display:none !important}
   .result{display:none}
   .result.show{display:block}
-  .score-badges{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-  .score{border:1px solid var(--border);background:#0f1520;border-radius:10px;padding:6px 10px;font-size:12px}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .badge{border:1px solid var(--border);background:#0f1520;border-radius:10px;padding:6px 10px;font-size:12px}
   .banner{border:1px dashed #2b3a4f;background:#0d1420;padding:14px;border-radius:12px;margin:12px 0}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
   th{color:var(--muted);font-weight:600}
   .muted{color:var(--muted)}
-  input:focus-visible + span, label.option:has(input:focus-visible){outline:3px solid var(--focus)}
+  input:focus-visible + .opt-title, label.option:has(input:focus-visible){outline:3px solid var(--focus)}
+  /* collapsible hint */
+  details.hint{margin:6px 0 0 28px}
+  details.hint summary{cursor:pointer;color:var(--muted);list-style:none}
+  details.hint summary::before{content:'▸';display:inline-block;margin-right:6px;transition:transform .15s ease}
+  details.hint[open] summary::before{transform:rotate(90deg)}
+  details.hint .hint-lines{padding:6px 0 2px}
+  .hint-line{font-size:13px;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="container">
   <header>
+    <img class="brand" src="auctane-logo.png" alt="Auctane" />
     <div>
       <div class="title">ShipStation Platform and Plan Recommender</div>
       <div class="subtitle">Mobile friendly guided discovery for field reps · Requirement based plan selection</div>
@@ -64,8 +75,8 @@
     <fieldset>
       <legend class="muted">Where do they want to print their labels?</legend>
       <div class="grid">
-        <label class="option"><input type="radio" name="platform" value="UI"> <span>In our app (ShipStation UI)</span></label>
-        <label class="option"><input type="radio" name="platform" value="API"> <span>In their system (ShipStation API)</span></label>
+        <label class="option"><input type="radio" name="platform" value="UI"> <div><div class="opt-title">In our app (ShipStation UI)</div></div></label>
+        <label class="option"><input type="radio" name="platform" value="API"> <div><div class="opt-title">In their system (ShipStation API)</div></div></label>
       </div>
     </fieldset>
   </section>
@@ -76,38 +87,43 @@
     <fieldset>
       <legend>Do they have access to developer resources?</legend>
       <div class="grid">
-        <label class="option"><input type="radio" name="api_dev" value="Yes"> <span>Yes</span></label>
-        <label class="option"><input type="radio" name="api_dev" value="No"> <span>No (Connect with API Partner)</span></label>
+        <label class="option"><input type="radio" name="api_dev" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
+        <label class="option"><input type="radio" name="api_dev" value="No"> <div><div class="opt-title">No (Connect with API Partner)</div></div></label>
       </div>
     </fieldset>
     <fieldset>
       <legend>Do they need 3PL functionality?</legend>
       <div class="grid">
-        <label class="option"><input type="radio" name="api_3pl" value="Yes"> <span>Yes</span></label>
-        <label class="option"><input type="radio" name="api_3pl" value="No"> <span>No</span></label>
+        <label class="option"><input type="radio" name="api_3pl" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
+        <label class="option"><input type="radio" name="api_3pl" value="No"> <div><div class="opt-title">No</div></div></label>
       </div>
     </fieldset>
     <fieldset>
       <legend>Do they need Platform Elements?</legend>
       <div class="grid">
-        <label class="option"><input type="radio" name="api_pe" value="Yes"> <span>Yes</span></label>
-        <label class="option"><input type="radio" name="api_pe" value="No"> <span>No</span></label>
+        <label class="option"><input type="radio" name="api_pe" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
+        <label class="option"><input type="radio" name="api_pe" value="No"> <div><div class="opt-title">No</div></div></label>
       </div>
     </fieldset>
   </section>
 
-  <!-- UI Path: Users and Shipments -->
+  <!-- UI Path: Users -->
   <section class="card hidden" id="sec-ui-users">
-    <div class="section-title">UI Path · Users and Shipments</div>
+    <div class="section-title">UI Path · Users</div>
     <fieldset>
       <legend>How many users do you need?</legend>
       <div class="grid cols-2">
-        <label class="option"><input type="radio" name="users" value="1 User"> <span>1 User</span></label>
-        <label class="option"><input type="radio" name="users" value="3 Users"> <span>3 Users</span></label>
-        <label class="option"><input type="radio" name="users" value="4-10 Users"> <span>4-10 Users</span></label>
-        <label class="option"><input type="radio" name="users" value="11-15 Users"> <span>11-15 Users</span></label>
+        <label class="option"><input type="radio" name="users" value="1 User"> <div><div class="opt-title">1 User</div><div class="muted">Free</div></div></label>
+        <label class="option"><input type="radio" name="users" value="3 Users"> <div><div class="opt-title">3 Users</div><div class="muted">Starter</div></div></label>
+        <label class="option"><input type="radio" name="users" value="4-10 Users"> <div><div class="opt-title">4–10 Users</div><div class="muted">Standard</div></div></label>
+        <label class="option"><input type="radio" name="users" value="11-15 Users"> <div><div class="opt-title">11–15 Users</div><div class="muted">Premium</div></div></label>
       </div>
     </fieldset>
+  </section>
+
+  <!-- UI Path: Shipments (own section, same styling) -->
+  <section class="card hidden" id="sec-ui-shipments">
+    <div class="section-title">UI Path · Shipments</div>
     <fieldset>
       <legend>How many shipments each month?</legend>
       <select name="shipments" id="shipments">
@@ -123,7 +139,7 @@
         <option>10,000</option>
         <option>15,000</option>
         <option>20,000</option>
-        <option>>20,000</option>
+        <option>20,000+</option>
       </select>
     </fieldset>
   </section>
@@ -134,63 +150,148 @@
     <div class="grid cols-2">
       <fieldset>
         <legend>International Shipping (Non Wallet)?</legend>
-        <label class="option"><input type="radio" name="intl" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="intl" value="Yes"> <span>Yes</span></label>
+        <label class="option"><input type="radio" name="intl" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
+        <label class="option"><input type="radio" name="intl" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>BYOA?</legend>
-        <label class="option"><input type="radio" name="byoa" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="byoa" value="Yes"> <span>Yes</span></label>
+        <label class="option"><input type="radio" name="byoa" value="No"> <div><div class="opt-title">No</div><div class="muted">Starter or Standard</div></div></label>
+        <label class="option"><input type="radio" name="byoa" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>Inventory management level?</legend>
-        <label class="option"><input type="radio" name="inv" value="None"> <span>None</span></label>
-        <label class="option"><input type="radio" name="inv" value="Product Catalog and Inventory Grid"> <span>Product Catalog and Inventory Grid</span></label>
-        <label class="option"><input type="radio" name="inv" value="Basic Inventory Management"> <span>Basic Inventory Management</span></label>
-        <label class="option"><input type="radio" name="inv" value="Advanced Inventory Management"> <span>Advanced Inventory Management</span></label>
+        <label class="option"><input type="radio" name="inv" value="None"> <div><div class="opt-title">None</div><div class="muted">Free</div></div></label>
+
+        <label class="option"><input type="radio" name="inv" value="Product Catalog and Inventory Grid">
+          <div>
+            <div class="opt-title">Product Catalog and Inventory Grid</div>
+            <div class="muted">Starter</div>
+          </div>
+        </label>
+
+        <label class="option"><input type="radio" name="inv" value="Basic Inventory Management">
+          <div>
+            <div class="opt-title">Basic Inventory Management</div>
+            <div class="muted">Standard</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> Product Catalog</div>
+                <div class="hint-line">> Inventory Grid</div>
+                <div class="hint-line">> Bundles</div>
+                <div class="hint-line">> Lot Tracking</div>
+                <div class="hint-line">> Inventory Sync Out</div>
+                <div class="hint-line">> Inventory Sync In (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
+
+        <label class="option"><input type="radio" name="inv" value="Advanced Inventory Management">
+          <div>
+            <div class="opt-title">Advanced Inventory Management</div>
+            <div class="muted">Premium</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> All Basic Inventory Features</div>
+                <div class="hint-line">> Scan to Audit (Coming Soon)</div>
+                <div class="hint-line">> Stock Transfer (Coming Soon)</div>
+                <div class="hint-line">> Purchase Orders (Coming Soon)</div>
+                <div class="hint-line">> Scan to Receive (Coming Soon)</div>
+                <div class="hint-line">> Forecasting (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
       </fieldset>
+
       <fieldset>
         <legend>Warehouse management level?</legend>
-        <label class="option"><input type="radio" name="wm" value="Standard packing slips"> <span>Standard packing slips</span></label>
-        <label class="option"><input type="radio" name="wm" value="Standard Pick Lists and Packing Slips"> <span>Standard Pick Lists and Packing Slips</span></label>
-        <label class="option"><input type="radio" name="wm" value="Advanced Warehouse Management"> <span>Advanced Warehouse Management</span></label>
-        <label class="option"><input type="radio" name="wm" value="All Warehouse Management features"> <span>All Warehouse Management features</span></label>
+        <label class="option"><input type="radio" name="wm" value="Standard packing slips">
+          <div><div class="opt-title">Standard packing slips</div><div class="muted">Free</div></div>
+        </label>
+
+        <label class="option"><input type="radio" name="wm" value="Standard Pick Lists and Packing Slips">
+          <div><div class="opt-title">Standard Pick Lists and Packing Slips</div><div class="muted">Starter</div></div>
+        </label>
+
+        <label class="option"><input type="radio" name="wm" value="Advanced Warehouse Management">
+          <div>
+            <div class="opt-title">Advanced Warehouse Management</div>
+            <div class="muted">Standard</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> Standard Pick Lists and Packing Slips</div>
+                <div class="hint-line">> Packing Slips (Customized)</div>
+                <div class="hint-line">> Barcode Scanning (Scan Page Access and Reports Page)</div>
+                <div class="hint-line">> Hot Keys: Barcode Actions and Custom Hot Keys</div>
+                <div class="hint-line">> Mobile Picking App: Basic Picking - Batch Picking (Coming Soon)</div>
+                <div class="hint-line">> Warehouse Dashboard and Picker Reports (Coming Soon)</div>
+                <div class="hint-line">> Mobile Packing (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
+
+        <label class="option"><input type="radio" name="wm" value="All Warehouse Management features">
+          <div>
+            <div class="opt-title">All Warehouse Management features</div>
+            <div class="muted">Premium</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> All Advanced Warehouse Features</div>
+                <div class="hint-line">> Mobile Picking App: Pick to Tote (Coming Soon)</div>
+                <div class="hint-line">> Cartonization (Coming Soon)</div>
+                <div class="hint-line">> Pick to Light (Coming Soon)</div>
+                <div class="hint-line">> Cubiscan (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
       </fieldset>
+
       <fieldset>
         <legend>Advanced return and exchange options?</legend>
-        <label class="option"><input type="radio" name="returns" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="returns" value="Yes"> <span>Yes</span></label>
+        <label class="option"><input type="radio" name="returns" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
+        <label class="option"><input type="radio" name="returns" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>Unlimited rule automations?</legend>
-        <label class="option"><input type="radio" name="rules" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="rules" value="Yes"> <span>Yes</span></label>
+        <label class="option"><input type="radio" name="rules" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
+        <label class="option"><input type="radio" name="rules" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>Auto Routing or Auto Split?</legend>
-        <label class="option"><input type="radio" name="routing" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="routing" value="Yes"> <span>Yes</span></label>
+        <label class="option"><input type="radio" name="routing" value="No"> <div><div class="opt-title">No</div><div class="muted">Free, Starter or Standard</div></div></label>
+        <label class="option"><input type="radio" name="routing" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>Rate Shopper?</legend>
-        <label class="option"><input type="radio" name="rates" value="Freemium Rate Shopper"> <span>Freemium Rate Shopper</span></label>
-        <label class="option"><input type="radio" name="rates" value="Advanced Rate Shopper"> <span>Advanced Rate Shopper</span></label>
+        <label class="option"><input type="radio" name="rates" value="Freemium Rate Shopper"> <div><div class="opt-title">Freemium Rate Shopper</div><div class="muted">Free or Starter</div></div></label>
+        <label class="option"><input type="radio" name="rates" value="Advanced Rate Shopper"> <div><div class="opt-title">Advanced Rate Shopper</div><div class="muted">Standard or Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>ODBC?</legend>
-        <label class="option"><input type="radio" name="odbc" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="odbc" value="Yes"> <span>Yes</span></label>
+        <label class="option"><input type="radio" name="odbc" value="No"> <div><div class="opt-title">No</div><div class="muted">Free, Starter or Standard</div></div></label>
+        <label class="option"><input type="radio" name="odbc" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>API Access?</legend>
-        <label class="option"><input type="radio" name="api_access" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="api_access" value="Yes"> <span>Yes</span></label>
+        <label class="option"><input type="radio" name="api_access" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
+        <label class="option"><input type="radio" name="api_access" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
       </fieldset>
+
       <fieldset>
         <legend>Phone Support or Dedicated AM?</legend>
-        <label class="option"><input type="radio" name="support" value="No"> <span>No</span></label>
-        <label class="option"><input type="radio" name="support" value="Phone Support"> <span>Phone Support</span></label>
-        <label class="option"><input type="radio" name="support" value="Dedicated AM"> <span>Dedicated Account Manager</span></label>
+        <label class="option"><input type="radio" name="support" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Phone Support"> <div><div class="opt-title">Phone Support</div><div class="muted">Standard</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Dedicated AM"> <div><div class="opt-title">Dedicated Account Manager</div><div class="muted">Premium</div></div></label>
       </fieldset>
     </div>
   </section>
@@ -201,9 +302,32 @@
     <fieldset>
       <legend>Do they need any of these add ons?</legend>
       <div class="grid cols-2">
-        <label class="option"><input type="checkbox" name="addons" value="Fulfillment"> <span>Fulfillment</span></label>
-        <label class="option"><input type="checkbox" name="addons" value="3PL Manager"> <span>3PL Manager</span></label>
-        <label class="option"><input type="checkbox" name="addons" value="Dropship Manager"> <span>Dropship Manager</span></label>
+        <label class="option"><input type="checkbox" name="addons" value="Fulfillment:0"> <div>
+          <div class="opt-title">Fulfillment</div>
+          <details class="hint"><summary>What this means</summary>
+            <div class="hint-lines">
+              <div class="hint-line">> ShipStation integrates directly with multiple fulfillment providers to help manage all your shipping needs.</div>
+            </div>
+          </details>
+        </div></label>
+
+        <label class="option"><input type="checkbox" name="addons" value="3PL Manager:50"> <div>
+          <div class="opt-title">3PL Manager ($50 per month)</div>
+          <details class="hint"><summary>What this means</summary>
+            <div class="hint-lines">
+              <div class="hint-line">> Save costs by outsourcing logistics operations and avoiding high warehouse maintenance fees.</div>
+            </div>
+          </details>
+        </div></label>
+
+        <label class="option"><input type="checkbox" name="addons" value="Dropship Manager:149"> <div>
+          <div class="opt-title">Dropship Manager ($149 per month)</div>
+          <details class="hint"><summary>What this means</summary>
+            <div class="hint-lines">
+              <div class="hint-line">> Invite multiple vendors to connect their ShipStation accounts to yours as fulfillment providers.</div>
+            </div>
+          </details>
+        </div></label>
       </div>
     </fieldset>
     <div class="actions">
@@ -216,7 +340,7 @@
   <section class="card result" id="sec-result">
     <div class="section-title">Recommendation</div>
     <div class="banner" id="rec-banner"></div>
-    <div class="score-badges" id="driver-badges"></div>
+    <div class="badges" id="driver-badges"></div>
     <table id="recap-table"></table>
     <div class="actions">
       <button class="btn link" id="btn-copy" type="button">Copy Summary</button>
@@ -235,22 +359,22 @@
   var PLAN_ORDER = ['Free','Starter','Standard','Premium'];
   var PLAN_INDEX = {Free:0, Starter:1, Standard:2, Premium:3};
 
-  // Pricing loaded from your spreadsheet (plan and shipment band specific)
-  // Keys for shipment bands are normalized like: "10","50","100","500","1000","2000","5000","7500","10000","15000","20000",">20000"
+  // Pricing from your spreadsheet (plan + shipment band)
+  // Shipment keys normalized: "10","50","100","500","1000","2000","5000","7500","10000","15000","20000","20000+"
   var PRICES = {
     "Free":    {"10": 0.00},
     "Starter": {"50":14.99,"100":29.99,"500":39.99,"1000":79.99,"2000":119.99,"5000":174.99},
-    "Standard":{"50":29.99,"100":59.99,"500":89.99,"1000":149.99,"2000":174.99,"5000":249.99,"7500":299.99,"10000":599.99,"15000":649.99,"20000":799.99,">20000":"Custom Pricing"},
-    "Premium": {"50":349.99,"100":399.99,"500":449.99,"1000":599.99,"2000":699.99,"5000":799.99,"7500":949.99,"10000":1099.99,"15000":1349.99,"20000":1499.99,">20000":"Custom Pricing"}
+    "Standard":{"50":29.99,"100":59.99,"500":89.99,"1000":149.99,"2000":174.99,"5000":249.99,"7500":299.99,"10000":599.99,"15000":649.99,"20000":799.99,"20000+":"Custom Pricing"},
+    "Premium": {"50":349.99,"100":399.99,"500":449.99,"1000":599.99,"2000":699.99,"5000":799.99,"7500":949.99,"10000":1099.99,"15000":1349.99,"20000":1499.99,"20000+":"Custom Pricing"}
   };
 
-  // Visibility based on platform
+  // Toggle path visibility
   qa('input[name=platform]').forEach(function(r){
     r.addEventListener('change', function(){
-      var v = q('input[name=platform]:checked');
-      v = v ? v.value : '';
+      var v = q('input[name=platform]:checked'); v = v ? v.value : '';
       show(q('#sec-api'), v==='API');
       show(q('#sec-ui-users'), v==='UI');
+      show(q('#sec-ui-shipments'), v==='UI');
       show(q('#sec-ui-features'), v==='UI');
       show(q('#sec-addons'), true);
       q('#sec-result').classList.remove('show');
@@ -258,12 +382,16 @@
     });
   });
 
-  // Requirement maps: answer -> allowed plans
-  function S(){ return new Set(PLAN_ORDER); }
+  function normalizeShip(v){
+    if(!v) return '';
+    var s = String(v).trim().toLowerCase().replace(/,/g,'');
+    if(s.indexOf('>')===0 || s.indexOf('20000+')===0) return '20000+';
+    return s.replace(/^0+/,''); // e.g., 010 -> 10
+  }
+
+  // For each answer, which plans are allowed?
   function allowed(field, value){
     switch(field){
-
-      // Users → minimum plan
       case 'users':
         if(value==='1 User') return new Set(['Free']);
         if(value==='3 Users') return new Set(['Starter']);
@@ -271,144 +399,122 @@
         if(value==='11-15 Users') return new Set(['Premium']);
         break;
 
-      // Shipments → allowed by plan availability from your list
-      case 'shipments':
+      case 'shipments': {
         var n = normalizeShip(value);
-        // derive allowed plans by presence in PRICES
         var ok = new Set();
         PLAN_ORDER.forEach(function(p){
           if(PRICES[p] && Object.prototype.hasOwnProperty.call(PRICES[p], n)) ok.add(p);
         });
         return ok;
+      }
 
-      case 'intl':
-        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
-      case 'byoa':
-        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Starter','Standard']);
+      case 'intl':       return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'byoa':       return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Starter','Standard']);
       case 'inv':
-        if(value==='None') return new Set(['Free']);
+        if(value==='None')                               return new Set(['Free']);
         if(value==='Product Catalog and Inventory Grid') return new Set(['Starter']);
-        if(value==='Basic Inventory Management') return new Set(['Standard']);
-        if(value==='Advanced Inventory Management') return new Set(['Premium']);
+        if(value==='Basic Inventory Management')         return new Set(['Standard']);
+        if(value==='Advanced Inventory Management')      return new Set(['Premium']);
         break;
       case 'wm':
-        if(value==='Standard packing slips') return new Set(['Free']);
-        if(value==='Standard Pick Lists and Packing Slips') return new Set(['Starter']);
-        if(value==='Advanced Warehouse Management') return new Set(['Standard']);
-        if(value==='All Warehouse Management features') return new Set(['Premium']);
+        if(value==='Standard packing slips')                    return new Set(['Free']);
+        if(value==='Standard Pick Lists and Packing Slips')     return new Set(['Starter']);
+        if(value==='Advanced Warehouse Management')             return new Set(['Standard']);
+        if(value==='All Warehouse Management features')         return new Set(['Premium']);
         break;
-      case 'returns':
-        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
-      case 'rules':
-        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
-      case 'routing':
-        return (value==='Yes') ? new Set(['Premium']) : new Set(['Free','Starter','Standard']);
-      case 'rates':
-        return (value==='Advanced Rate Shopper') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
-      case 'odbc':
-        return (value==='Yes') ? new Set(['Premium']) : new Set(['Free','Starter','Standard']);
-      case 'api_access':
-        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'returns':   return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'rules':     return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'routing':   return (value==='Yes') ? new Set(['Premium'])            : new Set(['Free','Starter','Standard']);
+      case 'rates':     return (value==='Advanced Rate Shopper') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'odbc':      return (value==='Yes') ? new Set(['Premium'])            : new Set(['Free','Starter','Standard']);
+      case 'api_access':return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
       case 'support':
-        if(value==='No') return new Set(['Free','Starter']);
+        if(value==='No')            return new Set(['Free','Starter']);
         if(value==='Phone Support') return new Set(['Standard']);
-        if(value==='Dedicated AM') return new Set(['Premium']);
+        if(value==='Dedicated AM')  return new Set(['Premium']);
         break;
 
-      // API path (record only)
+      // API path — we only record answers
       case 'api_dev':
       case 'api_3pl':
       case 'api_pe':
-        return S();
+        return new Set(PLAN_ORDER);
 
       default:
-        return S();
+        return new Set(PLAN_ORDER);
     }
-    return S();
-  }
-
-  function normalizeShip(v){
-    if(!v) return '';
-    var s = String(v).trim().toLowerCase().replace(/,/g,'');
-    if(s.indexOf('>')===0 || s.indexOf('more than')===0) return '>20000';
-    return s.replace(/^0+/,'');
+    return new Set(PLAN_ORDER);
   }
 
   function calcRecommendation(){
     var platform = (q('input[name=platform]:checked')||{}).value || '';
-
-    // Gather answers
     var answers = {};
     var addons = qa('input[name=addons]:checked').map(function(c){ return c.value; });
 
     if(platform==='UI'){
-      var fields = [
-        'users','shipments','intl','byoa','inv','wm','returns','rules','routing','rates','odbc','api_access','support'
-      ];
+      var fields = ['users','shipments','intl','byoa','inv','wm','returns','rules','routing','rates','odbc','api_access','support'];
       fields.forEach(function(f){
         if(f==='shipments'){
-          var val = q('#shipments').value;
-          if(val) answers[f] = val;
+          var val = q('#shipments').value; if(val) answers[f] = val;
         } else {
-          var sel = q('input[name='+f+']:checked');
-          if(sel && sel.value) answers[f] = sel.value;
+          var sel = q('input[name='+f+']:checked'); if(sel && sel.value) answers[f] = sel.value;
         }
       });
     } else if(platform==='API'){
       ['api_dev','api_3pl','api_pe'].forEach(function(f){
-        var sel = q('input[name='+f+']:checked');
-        if(sel && sel.value) answers[f] = sel.value;
+        var sel = q('input[name='+f+']:checked'); if(sel && sel.value) answers[f] = sel.value;
       });
     }
 
-    // Requirement based plan: pick the highest minimum required by any answer, then finalize plan
-    if(platform==='UI'){
-      var minIndexRequired = 0; // Free baseline
-      var drivers = []; // features that set or matched the final requirement
-      var finalAllowed = new Set(PLAN_ORDER); // for feasibility check too
-
-      Object.keys(answers).forEach(function(field){
-        var value = answers[field];
-        var allowedSet = allowed(field, value);
-        // Update feasibility intersection
-        finalAllowed = new Set(PLAN_ORDER.filter(function(p){ return finalAllowed.has(p) && allowedSet.has(p); }));
-        // Minimum tier this answer demands
-        var minTier = PLAN_ORDER.find(function(p){ return allowedSet.has(p); }) || 'Premium';
-        var idx = PLAN_INDEX[minTier];
-        if(idx > minIndexRequired){
-          minIndexRequired = idx;
-        }
-      });
-
-      // Recommended plan is the lowest cost plan that is at least minIndexRequired and still feasible with all answers
-      var recommended = null;
-      for(var i=minIndexRequired;i<PLAN_ORDER.length;i++){
-        var pName = PLAN_ORDER[i];
-        if(finalAllowed.has(pName)){ recommended = pName; break; }
-      }
-      // If contradiction left allowed empty, fall back to the minIndexRequired plan by order
-      if(!recommended) recommended = PLAN_ORDER[minIndexRequired];
-
-      // Identify driver features: those whose minimum tier equals the recommended plan (binding)
-      Object.keys(answers).forEach(function(field){
-        var value = answers[field];
-        var allowedSet = allowed(field, value);
-        var minTier = PLAN_ORDER.find(function(p){ return allowedSet.has(p); }) || 'Premium';
-        if(minTier === recommended){
-          drivers.push(driverLabel(field, value));
-        }
-      });
-
-      // Price lookup based on plan and shipments
-      var shipKey = normalizeShip(answers.shipments || '');
-      var price = shipKey && PRICES[recommended] ? PRICES[recommended][shipKey] : undefined;
-      var priceText = (price===undefined) ? 'N/A' : (price==='Custom Pricing' ? 'Custom Pricing' : ('$'+price.toFixed(2)+'/mo'));
-
-      return { platform:platform, answers:answers, addons:addons, recommended:recommended, drivers:drivers, priceText:priceText };
+    if(platform!=='UI'){
+      return { platform:platform, answers:answers, addons:addons, recommended:null, priceText:null, drivers:[], totals:null };
     }
 
-    // API path
-    return { platform:platform, answers:answers, addons:addons, recommended:null, drivers:[], priceText:null };
+    // Requirement logic
+    var minIndexRequired = 0;
+    var feasible = new Set(PLAN_ORDER);
+    Object.keys(answers).forEach(function(field){
+      var set = allowed(field, answers[field]);
+      feasible = new Set(PLAN_ORDER.filter(function(p){ return feasible.has(p) && set.has(p); }));
+      var minTier = PLAN_ORDER.find(function(p){ return set.has(p); }) || 'Premium';
+      minIndexRequired = Math.max(minIndexRequired, PLAN_INDEX[minTier]);
+    });
+
+    var recommended = null;
+    for(var i=minIndexRequired;i<PLAN_ORDER.length;i++){
+      var pName = PLAN_ORDER[i];
+      if(feasible.has(pName)){ recommended = pName; break; }
+    }
+    if(!recommended) recommended = PLAN_ORDER[minIndexRequired];
+
+    // Drivers: features whose minimum tier equals the recommended plan
+    var drivers = [];
+    Object.keys(answers).forEach(function(field){
+      var set = allowed(field, answers[field]);
+      var minTier = PLAN_ORDER.find(function(p){ return set.has(p); }) || 'Premium';
+      if(minTier === recommended) drivers.push(driverLabel(field, answers[field]));
+    });
+
+    // Pricing: plan price + add ons
+    var shipKey = normalizeShip(answers.shipments || '');
+    var planPrice = (shipKey && PRICES[recommended]) ? PRICES[recommended][shipKey] : undefined;
+    var addonSum = addons.reduce(function(sum, tag){
+      var parts = tag.split(':'); var cents = parts[1] ? parseFloat(parts[1]) : 0;
+      return sum + (isNaN(cents)?0:cents);
+    }, 0);
+
+    var totals = { planPrice: planPrice, addonSum: addonSum, total: null };
+    var priceText;
+    if(planPrice === 'Custom Pricing'){
+      priceText = 'Custom Pricing'; totals.total = 'Custom Pricing';
+    } else if(typeof planPrice === 'number'){
+      totals.total = (planPrice + addonSum);
+      priceText = '$'+planPrice.toFixed(2)+'/mo';
+    } else {
+      priceText = 'Select shipments to show price';
+    }
+
+    return { platform:platform, answers:answers, addons:addons, recommended:recommended, priceText:priceText, drivers:drivers, totals:totals };
   }
 
   function driverLabel(field, value){
@@ -434,12 +540,12 @@
   }
 
   function render(){
-    var res = calcRecommendation();
+    var r = calcRecommendation();
     var banner = q('#rec-banner');
     var drivers = q('#driver-badges');
     var recap = q('#recap-table');
 
-    if(res.platform==='API'){
+    if(r.platform==='API'){
       var dev = (q('input[name=api_dev]:checked')||{}).value || '—';
       var need3pl = (q('input[name=api_3pl]:checked')||{}).value || '—';
       var pe = (q('input[name=api_pe]:checked')||{}).value || '—';
@@ -448,20 +554,28 @@
         '<div><strong>Platform:</strong> ShipStation API</div>'+
         '<div class="muted">Dev resources: <strong>'+dev+'</strong> · 3PL: <strong>'+need3pl+'</strong> · Platform Elements: <strong>'+pe+'</strong></div>'+
         '<div style="margin-top:6px">Next Step: <strong>'+(partner? 'Connect with an API Partner' : 'Proceed with SS API solutioning')+'</strong></div>'+
-        '<div style="margin-top:6px">Add ons: '+(res.addons.length? res.addons.join(', ') : 'None')+'</div>';
+        '<div style="margin-top:6px">Add ons: '+(r.addons.length? r.addons.map(cleanAddonName).join(', ') : 'None')+'</div>';
       drivers.innerHTML = '';
-    } else if(res.platform==='UI'){
+    } else if(r.platform==='UI'){
+      var totalLine = '';
+      if(r.totals){
+        if(r.totals.total === 'Custom Pricing'){
+          totalLine = 'Total: Custom Pricing' + addonTotalSuffix(r.addons, r.totals);
+        } else if(typeof r.totals.total === 'number'){
+          totalLine = 'Total: $'+r.totals.total.toFixed(2)+'/mo (plan '+(r.priceText||'')+addonTotalSuffix(r.addons, r.totals)+')';
+        } else {
+          totalLine = 'Total: ' + (r.priceText || '—');
+        }
+      }
       banner.innerHTML =
         '<div><strong>Platform:</strong> ShipStation UI</div>'+
-        '<div><strong>Recommended Plan:</strong> '+(res.recommended || '—')+(res.priceText? ' — '+res.priceText : '')+'</div>'+
-        '<div style="margin-top:6px">Add ons: '+(res.addons.length? res.addons.join(', ') : 'None')+'</div>';
+        '<div><strong>Recommended Plan:</strong> '+(r.recommended || '—')+(r.priceText? ' — '+r.priceText : '')+'</div>'+
+        '<div style="margin-top:6px">'+ totalLine +'</div>'+
+        '<div style="margin-top:6px">Add ons: '+(r.addons.length? r.addons.map(cleanAddonName).join(', ') : 'None')+'</div>';
 
-      // Drivers badges
-      if(res.drivers.length){
-        drivers.innerHTML = res.drivers.map(function(d){ return '<span class="score">'+d+'</span>'; }).join('');
-      } else {
-        drivers.innerHTML = '<span class="muted">No higher plan drivers detected. Selection fits the base tier.</span>';
-      }
+      drivers.innerHTML = r.drivers.length
+        ? r.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
+        : '<span class="muted">No higher plan drivers detected. Selection fits the base tier.</span>';
     } else {
       banner.innerHTML = '<div>Please select a platform to begin.</div>';
       drivers.innerHTML = '';
@@ -469,9 +583,9 @@
 
     // Recap table
     var rows = [];
-    if(res.platform==='UI'){
+    if(r.platform==='UI'){
       rows.push(['Category','Answer']);
-      var order = [
+      [
         ['users','How many users do you need?'],
         ['shipments','How many shipments each month?'],
         ['intl','International Shipping (Non Wallet)?'],
@@ -485,13 +599,12 @@
         ['odbc','ODBC?'],
         ['api_access','API Access?'],
         ['support','Phone Support or Dedicated AM?']
-      ];
-      order.forEach(function(pair){ var k=pair[0], label=pair[1]; if(res.answers[k]) rows.push([label, res.answers[k]]); });
-    } else if(res.platform==='API'){
+      ].forEach(function(pair){ var k=pair[0], label=pair[1]; if(r.answers[k]) rows.push([label, r.answers[k]]); });
+    } else if(r.platform==='API'){
       rows.push(['Category','Answer']);
-      if(res.answers.api_dev) rows.push(['Developer resources', res.answers.api_dev]);
-      if(res.answers.api_3pl) rows.push(['3PL functionality', res.answers.api_3pl]);
-      if(res.answers.api_pe) rows.push(['Platform Elements', res.answers.api_pe]);
+      if(r.answers.api_dev) rows.push(['Developer resources', r.answers.api_dev]);
+      if(r.answers.api_3pl) rows.push(['3PL functionality', r.answers.api_3pl]);
+      if(r.answers.api_pe) rows.push(['Platform Elements', r.answers.api_pe]);
     }
 
     recap.innerHTML = rows.length
@@ -503,32 +616,46 @@
     window.scrollTo({top:q('#sec-result').offsetTop - 12, behavior:'smooth'});
   }
 
+  function addonTotalSuffix(addons, totals){
+    if(!addons || addons.length===0) return '';
+    if(totals && typeof totals.addonSum === 'number' && totals.addonSum>0){
+      return ' + $'+totals.addonSum.toFixed(2)+'/mo add ons';
+    }
+    return '';
+  }
+  function cleanAddonName(tag){
+    return tag.split(':')[0];
+  }
+
+  // Buttons
   q('#btn-calc').addEventListener('click', render);
   q('#btn-reset').addEventListener('click', function(){
     qa('input[type=radio],input[type=checkbox]').forEach(function(i){ i.checked=false; });
     q('#shipments').value = '';
-    [q('#sec-api'),q('#sec-ui-users'),q('#sec-ui-features'),q('#sec-addons')].forEach(function(s){ s.classList.add('hidden'); });
+    [q('#sec-api'),q('#sec-ui-users'),q('#sec-ui-shipments'),q('#sec-ui-features'),q('#sec-addons')].forEach(function(s){ s.classList.add('hidden'); });
     q('#sec-result').classList.remove('show');
     window.scrollTo({top:0,behavior:'smooth'});
   });
 
   q('#btn-copy').addEventListener('click', function(){
-    var r = calcRecommendation();
+    var r = calcRecommendation(); if(!r.platform){ alert('Please complete the questionnaire.'); return; }
     var lines = [];
-    if(!r.platform){ alert('Please complete the questionnaire.'); return; }
     lines.push('Platform: '+(r.platform==='UI'?'ShipStation UI':'ShipStation API'));
     if(r.platform==='UI'){
       lines.push('Recommended Plan: '+r.recommended + (r.priceText? ' — '+r.priceText : ''));
+      if(r.totals){
+        if(r.totals.total === 'Custom Pricing'){ lines.push('Total: Custom Pricing' + (r.totals.addonSum? ' + $'+r.totals.addonSum.toFixed(2)+'/mo add ons' : '')); }
+        else if(typeof r.totals.total === 'number'){ lines.push('Total: $'+r.totals.total.toFixed(2)+'/mo'); }
+      }
       lines.push('');
       lines.push('Drivers (features that required this plan):');
-      if(r.drivers.length){ r.drivers.forEach(function(d){ lines.push('- '+d); }); }
-      else { lines.push('- None'); }
+      if(r.drivers.length){ r.drivers.forEach(function(d){ lines.push('- '+d); }); } else { lines.push('- None'); }
     }
     lines.push('');
     lines.push('Answers:');
     Object.keys(r.answers).forEach(function(k){ lines.push('- '+k+': '+r.answers[k]); });
     lines.push('');
-    lines.push('Add ons: ' + (r.addons.length? r.addons.join(', ') : 'None'));
+    lines.push('Add ons: ' + (r.addons.length? r.addons.map(cleanAddonName).join(', ') : 'None'));
     var text = lines.join('\n');
 
     if(navigator.clipboard && navigator.clipboard.writeText){
