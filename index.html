@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ShipStation Platform and Plan Selection</title>
+<title>ShipStation Platform and Plan Recommender</title>
 <style>
   :root{
     --bg:#0b0f14; --card:#121822; --muted:#9fb3c8; --text:#e6edf3;
@@ -57,9 +57,10 @@
 <body>
 <div class="container">
   <header>
-    <img class="brand" src="Auctane%20BoxedLockup%20White%20RGB.png" alt="Auctane" />
+    <!-- Update src if your filename is different -->
+    <img class="brand" src="auctane-logo.png" alt="Auctane" />
     <div>
-      <div class="title">ShipStation Platform and Plan Selection</div>
+      <div class="title">ShipStation Platform and Plan Recommender</div>
       <div class="subtitle">Mobile friendly guided discovery for field reps · Requirement based plan selection</div>
     </div>
     <div class="row">
@@ -113,15 +114,15 @@
     <fieldset>
       <legend>How many users do you need?</legend>
       <div class="grid cols-2">
-        <label class="option"><input type="radio" name="users" value="1 User"> <div><div class="opt-title">1 User</div><div class="muted">Free</div></div></label>
-        <label class="option"><input type="radio" name="users" value="3 Users"> <div><div class="opt-title">3 Users</div><div class="muted">Starter</div></div></label>
-        <label class="option"><input type="radio" name="users" value="4-10 Users"> <div><div class="opt-title">4–10 Users</div><div class="muted">Standard</div></div></label>
-        <label class="option"><input type="radio" name="users" value="11-15 Users"> <div><div class="opt-title">11–15 Users</div><div class="muted">Premium</div></div></label>
+        <label class="option"><input type="radio" name="users" value="1 User"> <div><div class="opt-title">1 User</div></div></label>
+        <label class="option"><input type="radio" name="users" value="3 Users"> <div><div class="opt-title">3 Users</div></div></label>
+        <label class="option"><input type="radio" name="users" value="4-10 Users"> <div><div class="opt-title">4–10 Users</div></div></label>
+        <label class="option"><input type="radio" name="users" value="11-15 Users"> <div><div class="opt-title">11–15 Users</div></div></label>
       </div>
     </fieldset>
   </section>
 
-  <!-- UI Path: Shipments (own section, same styling) -->
+  <!-- UI Path: Shipments (own section) -->
   <section class="card hidden" id="sec-ui-shipments">
     <div class="section-title">UI Path · Shipments</div>
     <fieldset>
@@ -150,31 +151,29 @@
     <div class="grid cols-2">
       <fieldset>
         <legend>International Shipping (Non Wallet)?</legend>
-        <label class="option"><input type="radio" name="intl" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
-        <label class="option"><input type="radio" name="intl" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
+        <label class="option"><input type="radio" name="intl" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="intl" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>BYOA?</legend>
-        <label class="option"><input type="radio" name="byoa" value="No"> <div><div class="opt-title">No</div><div class="muted">Starter or Standard</div></div></label>
-        <label class="option"><input type="radio" name="byoa" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
+        <label class="option"><input type="radio" name="byoa" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="byoa" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>Inventory management level?</legend>
-        <label class="option"><input type="radio" name="inv" value="None"> <div><div class="opt-title">None</div><div class="muted">Free</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="None">
+          <div><div class="opt-title">None</div></div>
+        </label>
 
         <label class="option"><input type="radio" name="inv" value="Product Catalog and Inventory Grid">
-          <div>
-            <div class="opt-title">Product Catalog and Inventory Grid</div>
-            <div class="muted">Starter</div>
-          </div>
+          <div><div class="opt-title">Product Catalog and Inventory Grid</div></div>
         </label>
 
         <label class="option"><input type="radio" name="inv" value="Basic Inventory Management">
           <div>
             <div class="opt-title">Basic Inventory Management</div>
-            <div class="muted">Standard</div>
             <details class="hint"><summary>Included features</summary>
               <div class="hint-lines">
                 <div class="hint-line">> Product Catalog</div>
@@ -191,7 +190,6 @@
         <label class="option"><input type="radio" name="inv" value="Advanced Inventory Management">
           <div>
             <div class="opt-title">Advanced Inventory Management</div>
-            <div class="muted">Premium</div>
             <details class="hint"><summary>Included features</summary>
               <div class="hint-lines">
                 <div class="hint-line">> All Basic Inventory Features</div>
@@ -209,17 +207,16 @@
       <fieldset>
         <legend>Warehouse management level?</legend>
         <label class="option"><input type="radio" name="wm" value="Standard packing slips">
-          <div><div class="opt-title">Standard packing slips</div><div class="muted">Free</div></div>
+          <div><div class="opt-title">Standard packing slips</div></div>
         </label>
 
         <label class="option"><input type="radio" name="wm" value="Standard Pick Lists and Packing Slips">
-          <div><div class="opt-title">Standard Pick Lists and Packing Slips</div><div class="muted">Starter</div></div>
+          <div><div class="opt-title">Standard Pick Lists and Packing Slips</div></div>
         </label>
 
         <label class="option"><input type="radio" name="wm" value="Advanced Warehouse Management">
           <div>
             <div class="opt-title">Advanced Warehouse Management</div>
-            <div class="muted">Standard</div>
             <details class="hint"><summary>Included features</summary>
               <div class="hint-lines">
                 <div class="hint-line">> Standard Pick Lists and Packing Slips</div>
@@ -237,7 +234,6 @@
         <label class="option"><input type="radio" name="wm" value="All Warehouse Management features">
           <div>
             <div class="opt-title">All Warehouse Management features</div>
-            <div class="muted">Premium</div>
             <details class="hint"><summary>Included features</summary>
               <div class="hint-lines">
                 <div class="hint-line">> All Advanced Warehouse Features</div>
@@ -253,45 +249,45 @@
 
       <fieldset>
         <legend>Advanced return and exchange options?</legend>
-        <label class="option"><input type="radio" name="returns" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
-        <label class="option"><input type="radio" name="returns" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
+        <label class="option"><input type="radio" name="returns" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="returns" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>Unlimited rule automations?</legend>
-        <label class="option"><input type="radio" name="rules" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
-        <label class="option"><input type="radio" name="rules" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
+        <label class="option"><input type="radio" name="rules" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="rules" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>Auto Routing or Auto Split?</legend>
-        <label class="option"><input type="radio" name="routing" value="No"> <div><div class="opt-title">No</div><div class="muted">Free, Starter or Standard</div></div></label>
-        <label class="option"><input type="radio" name="routing" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Premium</div></div></label>
+        <label class="option"><input type="radio" name="routing" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="routing" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>Rate Shopper?</legend>
-        <label class="option"><input type="radio" name="rates" value="Freemium Rate Shopper"> <div><div class="opt-title">Freemium Rate Shopper</div><div class="muted">Free or Starter</div></div></label>
-        <label class="option"><input type="radio" name="rates" value="Advanced Rate Shopper"> <div><div class="opt-title">Advanced Rate Shopper</div><div class="muted">Standard or Premium</div></div></label>
+        <label class="option"><input type="radio" name="rates" value="Freemium Rate Shopper"> <div><div class="opt-title">Freemium Rate Shopper</div></div></label>
+        <label class="option"><input type="radio" name="rates" value="Advanced Rate Shopper"> <div><div class="opt-title">Advanced Rate Shopper</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>ODBC?</legend>
-        <label class="option"><input type="radio" name="odbc" value="No"> <div><div class="opt-title">No</div><div class="muted">Free, Starter or Standard</div></div></label>
-        <label class="option"><input type="radio" name="odbc" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Premium</div></div></label>
+        <label class="option"><input type="radio" name="odbc" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="odbc" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>API Access?</legend>
-        <label class="option"><input type="radio" name="api_access" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
-        <label class="option"><input type="radio" name="api_access" value="Yes"> <div><div class="opt-title">Yes</div><div class="muted">Standard or Premium</div></div></label>
+        <label class="option"><input type="radio" name="api_access" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="api_access" value="Yes"> <div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
       <fieldset>
         <legend>Phone Support or Dedicated AM?</legend>
-        <label class="option"><input type="radio" name="support" value="No"> <div><div class="opt-title">No</div><div class="muted">Free or Starter</div></div></label>
-        <label class="option"><input type="radio" name="support" value="Phone Support"> <div><div class="opt-title">Phone Support</div><div class="muted">Standard</div></div></label>
-        <label class="option"><input type="radio" name="support" value="Dedicated AM"> <div><div class="opt-title">Dedicated Account Manager</div><div class="muted">Premium</div></div></label>
+        <label class="option"><input type="radio" name="support" value="No"> <div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Phone Support"> <div><div class="opt-title">Phone Support</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Dedicated AM"> <div><div class="opt-title">Dedicated Account Manager</div></div></label>
       </fieldset>
     </div>
   </section>
@@ -359,7 +355,7 @@
   var PLAN_ORDER = ['Free','Starter','Standard','Premium'];
   var PLAN_INDEX = {Free:0, Starter:1, Standard:2, Premium:3};
 
-  // Pricing from your spreadsheet (plan + shipment band)
+  // Pricing (plan + shipment band)
   // Shipment keys normalized: "10","50","100","500","1000","2000","5000","7500","10000","15000","20000","20000+"
   var PRICES = {
     "Free":    {"10": 0.00},
@@ -434,7 +430,7 @@
         if(value==='Dedicated AM')  return new Set(['Premium']);
         break;
 
-      // API path — we only record answers
+      // API path — record only
       case 'api_dev':
       case 'api_3pl':
       case 'api_pe':
@@ -470,7 +466,7 @@
       return { platform:platform, answers:answers, addons:addons, recommended:null, priceText:null, drivers:[], totals:null };
     }
 
-    // Requirement logic
+    // Compute the minimum required plan and feasibility intersection
     var minIndexRequired = 0;
     var feasible = new Set(PLAN_ORDER);
     Object.keys(answers).forEach(function(field){
@@ -487,7 +483,7 @@
     }
     if(!recommended) recommended = PLAN_ORDER[minIndexRequired];
 
-    // Drivers: features whose minimum tier equals the recommended plan
+    // Drivers (features that bind to the recommended tier)
     var drivers = [];
     Object.keys(answers).forEach(function(field){
       var set = allowed(field, answers[field]);
@@ -499,8 +495,8 @@
     var shipKey = normalizeShip(answers.shipments || '');
     var planPrice = (shipKey && PRICES[recommended]) ? PRICES[recommended][shipKey] : undefined;
     var addonSum = addons.reduce(function(sum, tag){
-      var parts = tag.split(':'); var cents = parts[1] ? parseFloat(parts[1]) : 0;
-      return sum + (isNaN(cents)?0:cents);
+      var parts = tag.split(':'); var dollars = parts[1] ? parseFloat(parts[1]) : 0;
+      return sum + (isNaN(dollars)?0:dollars);
     }, 0);
 
     var totals = { planPrice: planPrice, addonSum: addonSum, total: null };
