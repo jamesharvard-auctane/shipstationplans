@@ -95,6 +95,18 @@
   .checklist{display:grid;grid-template-columns:1fr;gap:8px}
   .checklist label{display:flex;align-items:center;gap:10px;padding:10px;border:1px dashed var(--border);border-radius:10px;background:#0f1520}
   @media(min-width:700px){ .checklist{grid-template-columns:1fr 1fr} }
+
+  /* --- Typeahead chips + suggestions (Store Picker) --- */
+  .tagpicker{position:relative}
+  .tagchips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 8px}
+  .tagchip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#0f1520;border:1px solid var(--border);font-size:12px}
+  .tagchip button{all:unset;cursor:pointer;font-weight:700}
+  .taginput{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0f1520;color:var(--text)}
+  .suggest{position:absolute;z-index:20;left:0;right:0;top:100%;margin-top:4px;background:#0f1520;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:230px;overflow:auto}
+  .suggest .opt{padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--border)}
+  .suggest .opt:last-child{border-bottom:none}
+  .suggest .opt[aria-selected="true"], .suggest .opt:hover{background:#101826}
+  .tagerror{margin-top:6px;color:#ff8686;font-size:12px;min-height:16px}
 </style>
 </head>
 <body>
@@ -235,7 +247,14 @@
       <textarea name="api_disc_q1" placeholder="Rep notes..."></textarea>
 
       <label class="subheader">2. Where do you sell your products today?</label>
-      <textarea name="api_disc_q2" placeholder="Rep notes..."></textarea>
+      <!-- TYPEAHEAD MULTI-SELECT (API) -->
+      <div class="tagpicker" id="apiStorePicker">
+        <div class="tagchips" data-role="chips"></div>
+        <input class="taginput" type="text" placeholder="Start typing a store (e.g., Shopify, Amazon, WooCommerce)…" aria-label="Store search" />
+        <div class="suggest hidden" data-role="suggest"></div>
+        <div class="tagerror" data-role="error"></div>
+        <input type="hidden" name="api_disc_q2" value="[]">
+      </div>
 
       <label class="subheader">3. Where else do you sell?</label>
       <textarea name="api_disc_q3" placeholder="Rep notes..."></textarea>
@@ -474,7 +493,14 @@
       <textarea name="ui_disc_q1" placeholder="Rep notes..."></textarea>
 
       <label class="subheader">2. Where do you sell your products today?</label>
-      <textarea name="ui_disc_q2" placeholder="Rep notes..."></textarea>
+      <!-- TYPEAHEAD MULTI-SELECT (UI) -->
+      <div class="tagpicker" id="uiStorePicker">
+        <div class="tagchips" data-role="chips"></div>
+        <input class="taginput" type="text" placeholder="Start typing a store (e.g., Shopify, Amazon, WooCommerce)…" aria-label="Store search" />
+        <div class="suggest hidden" data-role="suggest"></div>
+        <div class="tagerror" data-role="error"></div>
+        <input type="hidden" name="ui_disc_q2" value="[]">
+      </div>
 
       <label class="subheader">3. Where else do you sell?</label>
       <textarea name="ui_disc_q3" placeholder="Rep notes..."></textarea>
@@ -603,6 +629,126 @@
     "Standard":{"50":29.99,"100":59.99,"500":89.99,"1000":149.99,"2000":174.99,"5000":249.99,"7500":299.99,"10000":599.99,"15000":649.99,"20000":799.99,"20000+":"Custom Pricing"},
     "Premium": {"50":349.99,"100":399.99,"500":449.99,"1000":599.99,"2000":699.99,"5000":799.99,"7500":949.99,"10000":1099.99,"15000":1349.99,"20000":1499.99,"20000+":"Custom Pricing"}
   };
+
+  /* ===== Supported Store Integrations (ShipStation) ===== */
+  var STORE_INTEGRATIONS = [
+    {name:'Acumatica',slug:'acumatica',aliases:[]},
+    {name:'Alibaba',slug:'alibaba',aliases:[]},
+    {name:'Amazon Marketplace',slug:'amazon_marketplace',aliases:['amazon']},
+    {name:'AmeriCommerce',slug:'americommerce',aliases:[]},
+    {name:'AmmoReady',slug:'ammoready',aliases:[]},
+    {name:'Back Market',slug:'back_market',aliases:[]},
+    {name:'Bandcamp',slug:'bandcamp',aliases:[]},
+    {name:'Best Buy CA',slug:'best_buy_ca',aliases:['best buy canada']},
+    {name:'Big Cartel',slug:'big_cartel',aliases:[]},
+    {name:'BigCommerce',slug:'bigcommerce',aliases:['big commerce']},
+    {name:'Bluepark',slug:'bluepark',aliases:[]},
+    {name:'Bonanza',slug:'bonanza',aliases:[]},
+    {name:'Brightpearl',slug:'brightpearl',aliases:[]},
+    {name:'Cdiscount',slug:'cdiscount',aliases:[]},
+    {name:'ChannelEngine',slug:'channelengine',aliases:[]},
+    {name:'Channel Pilot',slug:'channel_pilot',aliases:[]},
+    {name:'ChannelSale',slug:'channelsale',aliases:[]},
+    {name:'Cin7 Core',slug:'cin7_core',aliases:['dear systems','dear']},
+    {name:'Cin7 Omni',slug:'cin7_omni',aliases:[]},
+    {name:'Convictional',slug:'convictional',aliases:[]},
+    {name:'CoreCommerce',slug:'corecommerce',aliases:[]},
+    {name:'Coupang',slug:'coupang',aliases:[]},
+    {name:'Cratejoy',slug:'cratejoy',aliases:[]},
+    {name:'CS-Cart',slug:'cs_cart',aliases:['cscart']},
+    {name:'Darty',slug:'darty',aliases:[]},
+    {name:'eBay',slug:'ebay',aliases:['ebay stores']},
+    {name:'Ecwid',slug:'ecwid',aliases:[]},
+    {name:'EKM',slug:'ekm',aliases:['ekm powershop']},
+    {name:'Etsy',slug:'etsy',aliases:[]},
+    {name:'Extensiv (formerly Scout topShelf)',slug:'extensiv',aliases:['scout topshelf','topshelf']},
+    {name:'Faire',slug:'faire',aliases:[]},
+    {name:'FNAC',slug:'fnac',aliases:[]},
+    {name:'GeekSeller',slug:'geekseller',aliases:[]},
+    {name:'Groopdealz',slug:'groopdealz',aliases:[]},
+    {name:'Groupon Goods',slug:'groupon_goods',aliases:['groupon']},
+    {name:'Handshake',slug:'handshake',aliases:[]},
+    {name:'Houzz',slug:'houzz',aliases:[]},
+    {name:'Idealo',slug:'idealo',aliases:[]},
+    {name:'InkSoft',slug:'inksoft',aliases:[]},
+    {name:'Joom',slug:'joom',aliases:[]},
+    {name:'Kaufland',slug:'kaufland',aliases:[]},
+    {name:'Lengow',slug:'lengow',aliases:[]},
+    {name:'Liftoff',slug:'liftoff',aliases:[]},
+    {name:'Linnworks',slug:'linnworks',aliases:[]},
+    {name:'Listing Mirror',slug:'listing_mirror',aliases:[]},
+    {name:'Magento',slug:'magento',aliases:['adobe commerce']},
+    {name:'Marketplacer',slug:'marketplacer',aliases:[]},
+    {name:'Mercado Libre',slug:'mercado_libre',aliases:['mercadolibre']},
+    {name:'Michaels',slug:'michaels',aliases:[]},
+    {name:'MijoShop',slug:'mijoshop',aliases:[]},
+    {name:'Mirakl',slug:'mirakl',aliases:[]},
+    {name:'Miva',slug:'miva',aliases:[]},
+    {name:'Miva Connect',slug:'miva_connect',aliases:[]},
+    {name:'Modern Retail',slug:'modern_retail',aliases:[]},
+    {name:'MoreCommerce',slug:'morecommerce',aliases:[]},
+    {name:'Neto by Maropost',slug:'neto_by_maropost',aliases:['neto','maropost']},
+    {name:'Netsuite',slug:'netsuite',aliases:['oracle netsuite']},
+    {name:'Newegg',slug:'newegg',aliases:[]},
+    {name:'Notonthehighstreet',slug:'notonthehighstreet',aliases:['noths']},
+    {name:'OnBuy',slug:'onbuy',aliases:[]},
+    {name:'OpenCart',slug:'opencart',aliases:[]},
+    {name:'Order Time',slug:'order_time',aliases:['ordertime']},
+    {name:'Overstock.com',slug:'overstock',aliases:['overstock com']},
+    {name:'Oxatis',slug:'oxatis',aliases:[]},
+    {name:'PayPal',slug:'paypal',aliases:[]},
+    {name:'PrestaShop',slug:'prestashop',aliases:['presta']},
+    {name:'Quickbooks Commerce',slug:'quickbooks_commerce',aliases:['tradegecko','qbo commerce']},
+    {name:'Rakuten',slug:'rakuten',aliases:[]},
+    {name:'Reverb',slug:'reverb',aliases:[]},
+    {name:'RevolutionParts',slug:'revolutionparts',aliases:[]},
+    {name:'Rithum (formerly ChannelAdvisor)',slug:'rithum',aliases:['channeladvisor']},
+    {name:'Salesforce Commerce Cloud',slug:'salesforce_commerce_cloud',aliases:['sfcc','demandware']},
+    {name:'Salesforce Core',slug:'salesforce_core',aliases:['salesforce']},
+    {name:'Sears',slug:'sears',aliases:[]},
+    {name:'Sellbrite',slug:'sellbrite',aliases:[]},
+    {name:'SellerActive',slug:'selleractive',aliases:[]},
+    {name:'Shein',slug:'shein',aliases:[]},
+    {name:'Shift4Shop',slug:'shift4shop',aliases:['3dcart']},
+    {name:'Shop.com',slug:'shop_com',aliases:['shop dot com']},
+    {name:'Shop Premium Outlets',slug:'shop_premium_outlets',aliases:['spo']},
+    {name:'Shopify',slug:'shopify',aliases:['shopify plus']},
+    {name:'ShoppingFeed',slug:'shoppingfeed',aliases:[]},
+    {name:'Shopware v6 Cloud',slug:'shopware_v6_cloud',aliases:['shopware']},
+    {name:'SimplyDepo',slug:'simplydepo',aliases:[]},
+    {name:'Sophio',slug:'sophio',aliases:[]},
+    {name:'SOS Inventory',slug:'sos_inventory',aliases:[]},
+    {name:'Spark Shipping',slug:'spark_shipping',aliases:[]},
+    {name:'Spartoo',slug:'spartoo',aliases:[]},
+    {name:'Square Online Store',slug:'square_online_store',aliases:['square online','square']},
+    {name:'Squarespace',slug:'squarespace',aliases:[]},
+    {name:'Storenvy',slug:'storenvy',aliases:[]},
+    {name:'SureDone',slug:'suredone',aliases:[]},
+    {name:'Tanga',slug:'tanga',aliases:[]},
+    {name:'TikTok Shop',slug:'tiktok_shop',aliases:['tiktok']},
+    {name:'Tophatter',slug:'tophatter',aliases:[]},
+    {name:'Turbify',slug:'turbify',aliases:['yahoo stores','yahoo small business']},
+    {name:'UltraCart',slug:'ultracart',aliases:[]},
+    {name:'Visualsoft',slug:'visualsoft',aliases:[]},
+    {name:'Volo Commerce',slug:'volo_commerce',aliases:[]},
+    {name:'Volusion',slug:'volusion',aliases:[]},
+    {name:'VTEX',slug:'vtex',aliases:[]},
+    {name:'Walmart',slug:'walmart',aliases:[]},
+    {name:'Walmart Canada',slug:'walmart_canada',aliases:['walmart ca']},
+    {name:'Wayfair',slug:'wayfair',aliases:[]},
+    {name:'Web Shop Manager',slug:'web_shop_manager',aliases:[]},
+    {name:'Webflow',slug:'webflow',aliases:[]},
+    {name:'Weebly',slug:'weebly',aliases:[]},
+    {name:'Wish',slug:'wish',aliases:[]},
+    {name:'Wix',slug:'wix',aliases:[]},
+    {name:'WooCommerce',slug:'woocommerce',aliases:['woo']},
+    {name:'X-Cart',slug:'x_cart',aliases:['xcart']},
+    {name:'xentral',slug:'xentral',aliases:[]},
+    {name:'Yumbles',slug:'yumbles',aliases:[]},
+    {name:'Zen Cart',slug:'zen_cart',aliases:['zencart']},
+    {name:'Zoey',slug:'zoey',aliases:[]},
+    {name:'Zonos',slug:'zonos',aliases:[]}
+  ];
 
   // Toggle sections and swap logo (no auto-scroll)
   qa('input[name=platform]').forEach(function(r){
@@ -810,6 +956,132 @@
     return labels[field] || (field+': '+value);
   }
 
+  /* ===== TagPicker: typeahead + chips with validation ===== */
+  function TagPicker(rootEl, opts){
+    this.root = rootEl;
+    this.input = rootEl.querySelector('.taginput');
+    this.chipsEl = rootEl.querySelector('[data-role="chips"]');
+    this.suggestEl = rootEl.querySelector('[data-role="suggest"]');
+    this.errorEl = rootEl.querySelector('[data-role="error"]');
+    this.hidden = rootEl.querySelector('input[type=hidden]');
+    this.items = (opts && opts.items) || [];
+    this.maxSuggestions = (opts && opts.maxSuggestions) || 8;
+    this.selected = [];
+    this.highlightIndex = -1;
+
+    var self = this;
+    function norm(s){ return String(s||'').trim().toLowerCase(); }
+
+    function matches(q, item){
+      if(!q) return false;
+      q = norm(q);
+      if(norm(item.name).includes(q)) return true;
+      if(item.aliases && item.aliases.some(function(a){ return norm(a).includes(q); })) return true;
+      return false;
+    }
+
+    this.renderChips = function(){
+      this.chipsEl.innerHTML = this.selected.map(function(it,i){
+        return '<span class="tagchip" data-idx="'+i+'">'+it.name+' <button title="Remove" aria-label="Remove '+it.name+'">×</button></span>';
+      }).join('');
+      this.hidden.value = JSON.stringify(this.selected.map(function(it){ return it.slug; }));
+    };
+
+    this.clearError = function(){ this.errorEl.textContent=''; };
+    this.showError = function(msg){ this.errorEl.textContent = msg || 'Store not found/supported.'; };
+
+    this.filtered = [];
+    this.updateSuggest = function(){
+      var qv = this.input.value;
+      if(!qv){ this.suggestEl.classList.add('hidden'); this.suggestEl.innerHTML=''; this.highlightIndex=-1; return; }
+      this.filtered = this.items.filter(function(it){
+        var taken = self.selected.some(function(s){ return s.slug===it.slug; });
+        return !taken && matches(qv,it);
+      }).slice(0, this.maxSuggestions);
+
+      if(this.filtered.length===0){
+        this.suggestEl.innerHTML = '<div class="opt muted">No matches</div>';
+        this.suggestEl.classList.remove('hidden');
+        this.highlightIndex = -1;
+        return;
+      }
+      this.suggestEl.innerHTML = this.filtered.map(function(it,idx){
+        return '<div class="opt" role="option" data-idx="'+idx+'" aria-selected="'+(idx===self.highlightIndex)+'">'+it.name+'</div>';
+      }).join('');
+      this.suggestEl.classList.remove('hidden');
+    };
+
+    this.add = function(item){
+      if(!item) return;
+      if(this.selected.some(function(s){ return s.slug===item.slug; })) return;
+      this.selected.push({name:item.name, slug:item.slug});
+      this.renderChips();
+      this.input.value='';
+      this.suggestEl.classList.add('hidden');
+      this.clearError();
+      this.input.focus();
+    };
+
+    this.removeIdx = function(idx){
+      if(idx<0 || idx>=this.selected.length) return;
+      this.selected.splice(idx,1);
+      this.renderChips();
+    };
+
+    this.input.addEventListener('input', function(){ self.updateSuggest(); self.clearError(); });
+    this.input.addEventListener('keydown', function(e){
+      var key = e.key;
+      if(key==='ArrowDown'){
+        e.preventDefault();
+        if(self.filtered.length){ self.highlightIndex = (self.highlightIndex+1) % self.filtered.length; self.updateSuggestHighlight(); }
+      } else if(key==='ArrowUp'){
+        e.preventDefault();
+        if(self.filtered.length){ self.highlightIndex = (self.highlightIndex-1+self.filtered.length) % self.filtered.length; self.updateSuggestHighlight(); }
+      } else if(key==='Enter'){
+        e.preventDefault();
+        if(self.filtered.length && self.highlightIndex>=0){
+          self.add(self.filtered[self.highlightIndex]);
+        } else {
+          var qv = norm(self.input.value);
+          var exact = self.items.find(function(it){
+            return norm(it.name)===qv || (it.aliases||[]).some(function(a){ return norm(a)===qv; });
+          });
+          if(exact){ self.add(exact); }
+          else { self.showError('Store not found/supported.'); }
+        }
+      } else if(key==='Backspace' && !self.input.value){
+        self.removeIdx(self.selected.length-1);
+      }
+    });
+
+    this.updateSuggestHighlight = function(){
+      Array.prototype.forEach.call(self.suggestEl.querySelectorAll('.opt'), function(el,i){
+        el.setAttribute('aria-selected', i===self.highlightIndex ? 'true':'false');
+      });
+    };
+
+    this.suggestEl.addEventListener('mousedown', function(e){
+      var opt = e.target.closest('.opt'); if(!opt) return;
+      var idx = parseInt(opt.getAttribute('data-idx'),10);
+      if(!isNaN(idx) && self.filtered[idx]) self.add(self.filtered[idx]);
+    });
+
+    this.chipsEl.addEventListener('click', function(e){
+      if(e.target.tagName==='BUTTON'){
+        var chip = e.target.closest('.tagchip');
+        var idx = parseInt(chip.getAttribute('data-idx'),10);
+        self.removeIdx(idx);
+      }
+    });
+
+    this.set = function(values){
+      this.selected = [];
+      var map = {}; this.items.forEach(function(it){ map[it.slug]=it; });
+      (values||[]).forEach(function(sl){ if(map[sl]) self.selected.push({name:map[sl].name, slug:map[sl].slug}); });
+      this.renderChips();
+    };
+  }
+
   function render(){
     var r = calcRecommendation();
     var banner = q('#rec-banner');
@@ -859,8 +1131,8 @@
         ? r.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
         : '<span class="muted">No higher plan drivers detected. Selection fits the base tier.</span>';
 
-      var rows = [];
-      rows.push(['Category','Answer']);
+      var rows2 = [];
+      rows2.push(['Category','Answer']);
       [
         ['users','How many users do you need?'],
         ['shipments','How many shipments each month?'],
@@ -874,11 +1146,11 @@
         ['odbc','ODBC?'],
         ['api_access','API Access?'],
         ['support','Phone Support or Dedicated AM?']
-      ].forEach(function(pair){ var k=pair[0], label=pair[1]; if(r.answers[k]) rows.push([label, r.answers[k]]); });
+      ].forEach(function(pair){ var k=pair[0], label=pair[1]; if(r.answers[k]) rows2.push([label, r.answers[k]]); });
 
-      recap.innerHTML = rows.length
-        ? '<thead><tr><th>'+rows[0][0]+'</th><th>'+rows[0][1]+'</th></tr></thead>'+
-          '<tbody>'+rows.slice(1).map(function(rw){ return '<tr><td>'+rw[0]+'</td><td>'+rw[1]+'</td></tr>'; }).join('')+'</tbody>'
+      recap.innerHTML = rows2.length
+        ? '<thead><tr><th>'+rows2[0][0]+'</th><th>'+rows2[0][1]+'</th></tr></thead>'+
+          '<tbody>'+rows2.slice(1).map(function(rw){ return '<tr><td>'+rw[0]+'</td><td>'+rw[1]+'</td></tr>'; }).join('')+'</tbody>'
         : '';
     } else {
       banner.innerHTML = '<div>Please select a platform to begin.</div>';
@@ -908,6 +1180,9 @@
     q('#api_shipments').value = '';
     qa('textarea, input[type=text]').forEach(function(t){ t.value=''; });
 
+    if(window.apiStorePicker){ apiStorePicker.set([]); }
+    if(window.uiStorePicker){ uiStorePicker.set([]); }
+
     [q('#sec-api'),q('#sec-api-discovery'),
      q('#sec-ui-users'),q('#sec-ui-shipments'),q('#sec-ui-features'),q('#sec-ui-discovery'),
      q('#sec-addons'),q('#sec-actions')].forEach(function(s){ s.classList.add('hidden'); });
@@ -935,7 +1210,7 @@
       lines.push('- 3PL functionality: ' + (a.answers.api_3pl || '—'));
       lines.push('- Platform Elements: ' + (a.answers.api_pe || '—'));
       lines.push('- Estimated shipments each month: ' + (a.answers.api_shipments || '—'));
-      // Note: Discovery note fields are for rep reference only and do not change plan type.
+      // Note: Discovery note fields remain for rep reference only.
     } else {
       lines.push('Platform: ShipStation UI');
       lines.push('Recommended Plan: '+base.recommended + (base.priceText? ' — '+base.priceText : ''));
@@ -969,6 +1244,13 @@
     var blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'shipstation_recommendation.json'; a.click(); URL.revokeObjectURL(a.href);
   });
+
+  // === Instantiate store pickers for API + UI ===
+  var apiPickerEl = q('#apiStorePicker');
+  var uiPickerEl  = q('#uiStorePicker');
+  if(apiPickerEl){ window.apiStorePicker = new TagPicker(apiPickerEl, { items: STORE_INTEGRATIONS }); }
+  if(uiPickerEl){  window.uiStorePicker  = new TagPicker(uiPickerEl,  { items: STORE_INTEGRATIONS }); }
+
 })();
 </script>
 </body>
