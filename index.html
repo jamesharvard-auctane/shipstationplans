@@ -262,6 +262,46 @@
     #sec-api .cols-2.extra-gap{gap:32px}
     #sec-api .solo-block{margin-top:36px;padding-top:16px}
   }
+  <style>
+  /* === Make all green question text match white answers === */
+
+  /* 1) Define what the answer typography is (adjust if needed) */
+  :root{
+    --answer-font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+    --answer-font-size: 16px;     /* match your white answer size */
+    --answer-line-height: 1.5;
+    --answer-font-weight: 400;    /* change to 500 if your answers are bolder */
+  }
+
+  /* 2) Ensure answers use the base typography (safe even if already set) */
+  .answer, .answer * {
+    font-family: var(--answer-font-family) !important;
+    font-size: var(--answer-font-size) !important;
+    line-height: var(--answer-line-height) !important;
+    font-weight: var(--answer-font-weight) !important;
+  }
+
+  /* 3) Force all green question text to inherit the same typography */
+  .question, .question * {
+    font-family: var(--answer-font-family) !important;
+    font-size: var(--answer-font-size) !important;
+    line-height: var(--answer-line-height) !important;
+    font-weight: var(--answer-font-weight) !important;
+  }
+
+  /* If your green text uses Tailwind-like classes, these catch-alls help */
+  .text-green, [class*="text-green"], .text-[#00A36C] {
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+  }
+
+  /* If the green questions were inside headings (h2/h3), normalize them */
+  .question h1, .question h2, .question h3,
+  .question h4, .question h5, .question h6 {
+    font-size: var(--answer-font-size) !important;
+    font-weight: var(--answer-font-weight) !important;
+  }
 </style>
 </head>
 <body>
