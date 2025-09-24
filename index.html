@@ -169,79 +169,35 @@
     </fieldset>
   </section>
 
-  <!-- API Path -->
+  <!-- API Path (kept lightweight; shipments moved to discovery) -->
   <section class="card hidden" id="sec-api">
     <div class="section-title">API Path · Discovery Guide</div>
-
     <fieldset>
       <legend>Do they have access to developer resources?</legend>
       <div class="grid cols-2 extra-gap with-divider">
-        <label class="option">
-          <input type="radio" name="api_dev" value="Yes">
-          <div>
-            <div class="opt-title">Yes</div>
-            <details class="hint"><summary>Examples and signals</summary>
-              <div class="hint-lines">
-                <div class="hint-group"><div class="hint-title">Listen for</div>
-                  <div class="hint-line">> Engineers can own an integration</div>
-                  <div class="hint-line">> Comfortable with REST APIs and webhooks</div>
-                </div>
-                <div class="hint-group"><div class="hint-title">Next step</div>
-                  <div class="hint-line">> Proceed with ShipStation API solutioning</div>
-                </div>
-              </div>
-            </details>
-          </div>
-        </label>
-        <label class="option">
-          <input type="radio" name="api_dev" value="No">
-          <div>
-            <div class="opt-title">No</div>
-            <details class="hint"><summary>Examples and signals</summary>
-              <div class="hint-lines">
-                <div class="hint-group"><div class="hint-title">Listen for</div>
-                  <div class="hint-line">> No developers or limited bandwidth</div>
-                  <div class="hint-line">> Prefer a partner to build and support</div>
-                </div>
-                <div class="hint-group"><div class="hint-title">Next step</div>
-                  <div class="hint-line">> Connect with an API Partner for delivery</div>
-                </div>
-              </div>
-            </details>
-          </div>
-        </label>
+        <label class="option"><input type="radio" name="api_dev" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+        <label class="option"><input type="radio" name="api_dev" value="No"><div><div class="opt-title">No</div></div></label>
       </div>
     </fieldset>
-
     <div class="grid cols-2 extra-gap with-divider">
       <fieldset>
         <legend>Do they need 3PL functionality?</legend>
         <label class="option"><input type="radio" name="api_3pl" value="Yes"><div><div class="opt-title">Yes</div></div></label>
         <label class="option"><input type="radio" name="api_3pl" value="No"><div><div class="opt-title">No</div></div></label>
       </fieldset>
-
       <fieldset>
         <legend>Do they need Platform Elements?</legend>
         <label class="option"><input type="radio" name="api_pe" value="Yes"><div><div class="opt-title">Yes</div></div></label>
         <label class="option"><input type="radio" name="api_pe" value="No"><div><div class="opt-title">No</div></div></label>
       </fieldset>
     </div>
-
-    <fieldset class="solo-block">
-      <legend>Estimated shipments each month?</legend>
-      <select name="api_shipments" id="api_shipments">
-        <option value="">Select...</option>
-        <option>10</option><option>50</option><option>100</option><option>500</option>
-        <option>1,000</option><option>2,000</option><option>5,000</option><option>7,500</option>
-        <option>10,000</option><option>15,000</option><option>20,000</option><option>20,000+</option>
-      </select>
-    </fieldset>
   </section>
 
   <!-- ==== API: Discovery + Checklist (no impact on plan) ==== -->
   <section class="card hidden" id="sec-api-discovery">
     <div class="section-title">Discovery Basics</div>
     <div class="discovery-lead">DISCOVERY BASICS: Use these questions to better understand a merchant's business objectives. Not asking all of these questions could lead to gaps in their process and not fully understanding their objectives, thus not creating value.</div>
+
     <div class="grid">
       <label class="subheader">1. What type of products do you sell?</label>
       <textarea name="api_disc_q1" placeholder="Rep notes..."></textarea>
@@ -256,116 +212,37 @@
         <input type="hidden" name="api_disc_q2" value="[]">
       </div>
 
-      <label class="subheader">3. Where else do you sell?</label>
-      <textarea name="api_disc_q3" placeholder="Rep notes..."></textarea>
-
-      <label class="subheader">4. What carriers are you shipping with? What's more important, fast or cheap? (Do you have your own carriers?)</label>
-      <textarea name="api_disc_q4" placeholder="Rep notes..."></textarea>
-
-      <label class="subheader">5. Do you ship internationally today or just Domestic?</label>
-      <textarea name="api_disc_q5" placeholder="Rep notes..."></textarea>
-
-      <label class="subheader">6. How are you managing inventory?</label>
-      <textarea name="api_disc_q6" placeholder="Rep notes..."></textarea>
-
-      <label class="subheader">7. How are you managing returns?</label>
-      <textarea name="api_disc_q7" placeholder="Rep notes..."></textarea>
-
-      <label class="subheader">8. How many packages are you sending a month?</label>
-      <textarea name="api_disc_q8" placeholder="Rep notes..."></textarea>
-
-      <label class="subheader">9. How many packages for next month? Any holiday sales coming up?</label>
-      <textarea name="api_disc_q9" placeholder="Rep notes..."></textarea>
-
-      <label class="subheader">10. When are you looking to get this implemented?</label>
-      <textarea name="api_disc_q10" placeholder="Rep notes..."></textarea>
-    </div>
-
-    <div class="banner" style="margin-top:12px">
-      <strong>RECAP HERE & CONFIRM</strong> – “FROM WHAT I AM HEARING <em>[INSERT RECAP STATEMENT FROM BOXES ABOVE]</em> IS THAT CORRECT?”
-    </div>
-
-    <div class="section-title" style="margin-top:16px">Process Discovery</div>
-    <div class="discovery-lead">PROCESS DISCOVERY - GET VERY SPECIFIC! Make sure you get very detailed in their shipping process.
-      Have they shipped before? What was that experience like? Was there anything that you wished could be easier or more efficient? What is making this process hard or inefficient? Are there any pains or challenges that we’ve missed?</div>
-
-    <label class="subheader">11. From cart to door, what does your fulfillment process look like? Use this area to discover features. You should have at least 1 automation rule*, and another feature.</label>
-    <textarea name="api_proc_q11" placeholder="Rep notes..."></textarea>
-
-    <div class="grid cols-2 extra-gap">
-      <div>
-        <label class="subheader">11a. Pain/Challenge 1</label>
-        <textarea name="api_proc_pain1" placeholder="Rep notes..."></textarea>
-      </div>
-      <div>
-        <label class="subheader">11b. Pain/Challenge 2</label>
-        <textarea name="api_proc_pain2" placeholder="Rep notes..."></textarea>
-      </div>
-    </div>
-    <div>
-      <label class="subheader">11c. Pain/Challenge 3</label>
-      <textarea name="api_proc_pain3" placeholder="Rep notes..."></textarea>
-    </div>
-
-    <div class="banner" style="margin-top:12px">
-      <strong>RECAP CHALLENGES AND GIVE VALUE STATEMENT</strong> – “IS THERE ANYTHING ELSE I SHOULD KNOW THAT WOULD MAKE THIS TRANSITION BETTER”?
-      <textarea name="api_value_recap" placeholder="Rep recap and value statement..." style="margin-top:10px"></textarea>
-    </div>
-
-    <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
-    <div class="checklist">
-      <label><input type="checkbox" name="api_onboard" value="Connect Selling Channel"> <span>Connect Selling Channel</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set Ship From Location"> <span>Set Ship From Location</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set up Carriers"> <span>Set up Carriers</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set up Automation (at least 1)"> <span>Set up Automation (at least 1)</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Discuss/Explain Inventory"> <span>Discuss/Explain Inventory</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Discuss/Explain Returns"> <span>Discuss/Explain Returns</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set up Subscription w/ ACH or Card"> <span>Set up Subscription w/ ACH or Card</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Configure a Label / Ensure they know how to print"> <span>Configure a Label / Ensure they know how to print</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Support Resources"> <span>Support Resources</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Definitive Next Steps / Follow Up"> <span>Definitive Next Steps / Follow Up</span></label>
-    </div>
-  </section>
-
-  <!-- UI Path: Users -->
-  <section class="card hidden" id="sec-ui-users">
-    <div class="section-title">UI Path · Users</div>
-    <fieldset>
-      <legend>How many users do you need?</legend>
-      <div class="grid cols-2 extra-gap with-divider">
-        <label class="option"><input type="radio" name="users" value="1 User"><div><div class="opt-title">1 User</div></div></label>
-        <label class="option"><input type="radio" name="users" value="2-3 Users"><div><div class="opt-title">2–3 Users</div></div></label>
-        <label class="option"><input type="radio" name="users" value="4-10 Users"><div><div class="opt-title">4–10 Users</div></div></label>
-        <label class="option"><input type="radio" name="users" value="11-15 Users"><div><div class="opt-title">11–15 Users</div></div></label>
-      </div>
-    </fieldset>
-  </section>
-
-  <!-- UI Path: Shipments -->
-  <section class="card hidden" id="sec-ui-shipments">
-    <div class="section-title">UI Path · Shipments</div>
-    <fieldset>
-      <legend>How many shipments each month?</legend>
-      <select name="shipments" id="shipments">
+      <!-- MOVED HERE: shipments -->
+      <label class="subheader">How many shipments each month?</label>
+      <select name="api_shipments" id="api_shipments">
         <option value="">Select...</option>
         <option>10</option><option>50</option><option>100</option><option>500</option>
         <option>1,000</option><option>2,000</option><option>5,000</option><option>7,500</option>
         <option>10,000</option><option>15,000</option><option>20,000</option><option>20,000+</option>
       </select>
-    </fieldset>
-  </section>
 
-  <!-- UI Path: Features (International removed previously) -->
-  <section class="card hidden" id="sec-ui-features">
-    <div class="section-title">UI Path · Features</div>
-    <div class="grid cols-2 extra-gap with-divider">
-
-      <fieldset>
-        <legend>BYOA?</legend>
+      <!-- BYOA moved into Discovery -->
+      <label class="subheader">BYOA?</label>
+      <div class="grid cols-2">
         <label class="option"><input type="radio" name="byoa" value="No"><div><div class="opt-title">No</div></div></label>
         <label class="option"><input type="radio" name="byoa" value="Yes"><div><div class="opt-title">Yes</div></div></label>
-      </fieldset>
+      </div>
 
+      <!-- Carriers (renamed) -->
+      <label class="subheader">What carriers are you shipping with?</label>
+      <textarea name="api_disc_carriers" placeholder="Rep notes..."></textarea>
+
+      <!-- International changed to Yes/No -->
+      <label class="subheader">Do you ship internationally?</label>
+      <div class="grid cols-2">
+        <label class="option"><input type="radio" name="intl" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="intl" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </div>
+
+      <label class="subheader">6. How are you managing inventory?</label>
+      <textarea name="api_disc_q6" placeholder="Rep notes..."></textarea>
+
+      <!-- Inventory & Warehouse levels moved directly under inventory textbox -->
       <fieldset>
         <legend>Inventory management level?</legend>
         <label class="option"><input type="radio" name="inv" value="None"><div><div class="opt-title">None</div></div></label>
@@ -439,10 +316,25 @@
         </label>
       </fieldset>
 
+      <label class="subheader">7. How are you managing returns?</label>
+      <textarea name="api_disc_q7" placeholder="Rep notes..."></textarea>
+
+      <!-- Advanced returns moved under returns textbox -->
       <fieldset>
         <legend>Advanced return and exchange options?</legend>
         <label class="option"><input type="radio" name="returns" value="No"><div><div class="opt-title">No</div></div></label>
         <label class="option"><input type="radio" name="returns" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <!-- Remaining UI Users + Feature questions appended here -->
+      <fieldset>
+        <legend>How many users do you need?</legend>
+        <div class="grid cols-2 extra-gap with-divider">
+          <label class="option"><input type="radio" name="users" value="1 User"><div><div class="opt-title">1 User</div></div></label>
+          <label class="option"><input type="radio" name="users" value="2-3 Users"><div><div class="opt-title">2–3 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="4-10 Users"><div><div class="opt-title">4–10 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="11-15 Users"><div><div class="opt-title">11–15 Users</div></div></label>
+        </div>
       </fieldset>
 
       <fieldset>
@@ -482,12 +374,58 @@
         <label class="option"><input type="radio" name="support" value="Dedicated AM"><div><div class="opt-title">Dedicated Account Manager</div></div></label>
       </fieldset>
     </div>
+
+    <div class="banner" style="margin-top:12px">
+      <strong>RECAP HERE & CONFIRM</strong> – “FROM WHAT I AM HEARING <em>[INSERT RECAP STATEMENT FROM BOXES ABOVE]</em> IS THAT CORRECT?”
+    </div>
+
+    <div class="section-title" style="margin-top:16px">Process Discovery</div>
+    <div class="discovery-lead">PROCESS DISCOVERY - GET VERY SPECIFIC! Make sure you get very detailed in their shipping process.
+      Have they shipped before? What was that experience like? Was there anything that you wished could be easier or more efficient? What is making this process hard or inefficient? Are there any pains or challenges that we’ve missed?</div>
+
+    <label class="subheader">11. From cart to door, what does your fulfillment process look like? Use this area to discover features. You should have at least 1 automation rule*, and another feature.</label>
+    <textarea name="api_proc_q11" placeholder="Rep notes..."></textarea>
+
+    <div class="grid cols-2 extra-gap">
+      <div>
+        <label class="subheader">11a. Pain/Challenge 1</label>
+        <textarea name="api_proc_pain1" placeholder="Rep notes..."></textarea>
+      </div>
+      <div>
+        <label class="subheader">11b. Pain/Challenge 2</label>
+        <textarea name="api_proc_pain2" placeholder="Rep notes..."></textarea>
+      </div>
+    </div>
+    <div>
+      <label class="subheader">11c. Pain/Challenge 3</label>
+      <textarea name="api_proc_pain3" placeholder="Rep notes..."></textarea>
+    </div>
+
+    <div class="banner" style="margin-top:12px">
+      <strong>RECAP CHALLENGES AND GIVE VALUE STATEMENT</strong> – “IS THERE ANYTHING ELSE I SHOULD KNOW THAT WOULD MAKE THIS TRANSITION BETTER”?
+      <textarea name="api_value_recap" placeholder="Rep recap and value statement..." style="margin-top:10px"></textarea>
+    </div>
+
+    <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
+    <div class="checklist">
+      <label><input type="checkbox" name="api_onboard" value="Connect Selling Channel"> <span>Connect Selling Channel</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Set Ship From Location"> <span>Set Ship From Location</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Set up Carriers"> <span>Set up Carriers</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Set up Automation (at least 1)"> <span>Set up Automation (at least 1)</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Discuss/Explain Inventory"> <span>Discuss/Explain Inventory</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Discuss/Explain Returns"> <span>Discuss/Explain Returns</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Set up Subscription w/ ACH or Card"> <span>Set up Subscription w/ ACH or Card</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Configure a Label / Ensure they know how to print"> <span>Configure a Label / Ensure they know how to print</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Support Resources"> <span>Support Resources</span></label>
+      <label><input type="checkbox" name="api_onboard" value="Definitive Next Steps / Follow Up"> <span>Definitive Next Steps / Follow Up</span></label>
+    </div>
   </section>
 
-  <!-- ==== UI: Discovery + Checklist (no impact on plan) ==== -->
+  <!-- ==== UI: Discovery + Checklist (plan-impact fields live here) ==== -->
   <section class="card hidden" id="sec-ui-discovery">
     <div class="section-title">Discovery Basics</div>
     <div class="discovery-lead">DISCOVERY BASICS: Use these questions to better understand a merchant's business objectives. Not asking all of these questions could lead to gaps in their process and not fully understanding their objectives, thus not creating value.</div>
+
     <div class="grid">
       <label class="subheader">1. What type of products do you sell?</label>
       <textarea name="ui_disc_q1" placeholder="Rep notes..."></textarea>
@@ -502,29 +440,167 @@
         <input type="hidden" name="ui_disc_q2" value="[]">
       </div>
 
-      <label class="subheader">3. Where else do you sell?</label>
-      <textarea name="ui_disc_q3" placeholder="Rep notes..."></textarea>
+      <!-- MOVED HERE: shipments (UI) -->
+      <label class="subheader">How many shipments each month?</label>
+      <select name="shipments" id="shipments">
+        <option value="">Select...</option>
+        <option>10</option><option>50</option><option>100</option><option>500</option>
+        <option>1,000</option><option>2,000</option><option>5,000</option><option>7,500</option>
+        <option>10,000</option><option>15,000</option><option>20,000</option><option>20,000+</option>
+      </select>
 
-      <label class="subheader">4. What carriers are you shipping with? What's more important, fast or cheap? (Do you have your own carriers?)</label>
-      <textarea name="ui_disc_q4" placeholder="Rep notes..."></textarea>
+      <!-- BYOA moved into Discovery -->
+      <label class="subheader">BYOA?</label>
+      <div class="grid cols-2">
+        <label class="option"><input type="radio" name="byoa" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="byoa" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </div>
 
-      <label class="subheader">5. Do you ship internationally today or just Domestic?</label>
-      <textarea name="ui_disc_q5" placeholder="Rep notes..."></textarea>
+      <!-- Carriers (renamed) -->
+      <label class="subheader">What carriers are you shipping with?</label>
+      <textarea name="ui_disc_carriers" placeholder="Rep notes..."></textarea>
+
+      <!-- International changed to Yes/No -->
+      <label class="subheader">Do you ship internationally?</label>
+      <div class="grid cols-2">
+        <label class="option"><input type="radio" name="intl" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="intl" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </div>
 
       <label class="subheader">6. How are you managing inventory?</label>
       <textarea name="ui_disc_q6" placeholder="Rep notes..."></textarea>
 
+      <!-- Inventory & Warehouse levels moved directly under inventory textbox -->
+      <fieldset>
+        <legend>Inventory management level?</legend>
+        <label class="option"><input type="radio" name="inv" value="None"><div><div class="opt-title">None</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="Product Catalog and Inventory Grid"><div><div class="opt-title">Product Catalog and Inventory Grid</div></div></label>
+        <label class="option">
+          <input type="radio" name="inv" value="Basic Inventory Management">
+          <div>
+            <div class="opt-title">Basic Inventory Management</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> Product Catalog</div><div class="hint-line">> Inventory Grid</div>
+                <div class="hint-line">> Bundles</div><div class="hint-line">> Lot Tracking</div>
+                <div class="hint-line">> Inventory Sync Out</div><div class="hint-line">> Inventory Sync In (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
+        <label class="option">
+          <input type="radio" name="inv" value="Advanced Inventory Management">
+          <div>
+            <div class="opt-title">Advanced Inventory Management</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> All Basic Inventory Features</div>
+                <div class="hint-line">> Scan to Audit (Coming Soon)</div>
+                <div class="hint-line">> Stock Transfer (Coming Soon)</div>
+                <div class="hint-line">> Purchase Orders (Coming Soon)</div>
+                <div class="hint-line">> Scan to Receive (Coming Soon)</div>
+                <div class="hint-line">> Forecasting (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Warehouse management level?</legend>
+        <label class="option"><input type="radio" name="wm" value="Standard packing slips"><div><div class="opt-title">Standard packing slips</div></div></label>
+        <label class="option"><input type="radio" name="wm" value="Standard Pick Lists and Packing Slips"><div><div class="opt-title">Standard Pick Lists and Packing Slips</div></div></label>
+        <label class="option">
+          <input type="radio" name="wm" value="Advanced Warehouse Management">
+          <div>
+            <div class="opt-title">Advanced Warehouse Management</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> Standard Pick Lists and Packing Slips</div>
+                <div class="hint-line">> Packing Slips (Customized)</div>
+                <div class="hint-line">> Barcode Scanning (Scan Page Access and Reports Page)</div>
+                <div class="hint-line">> Hot Keys: Barcode Actions and Custom Hot Keys</div>
+                <div class="hint-line">> Mobile Picking App: Basic Picking - Batch Picking (Coming Soon)</div>
+                <div class="hint-line">> Warehouse Dashboard and Picker Reports (Coming Soon)</div>
+                <div class="hint-line">> Mobile Packing (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
+        <label class="option">
+          <input type="radio" name="wm" value="All Warehouse Management features">
+          <div>
+            <div class="opt-title">All Warehouse Management features</div>
+            <details class="hint"><summary>Included features</summary>
+              <div class="hint-lines">
+                <div class="hint-line">> All Advanced Warehouse Features</div>
+                <div class="hint-line">> Mobile Picking App: Pick to Tote (Coming Soon)</div>
+                <div class="hint-line">> Cartonization (Coming Soon)</div>
+                <div class="hint-line">> Pick to Light (Coming Soon)</div>
+                <div class="hint-line">> Cubiscan (Coming Soon)</div>
+              </div>
+            </details>
+          </div>
+        </label>
+      </fieldset>
+
       <label class="subheader">7. How are you managing returns?</label>
       <textarea name="ui_disc_q7" placeholder="Rep notes..."></textarea>
 
-      <label class="subheader">8. How many packages are you sending a month?</label>
-      <textarea name="ui_disc_q8" placeholder="Rep notes..."></textarea>
+      <!-- Advanced returns moved under returns textbox -->
+      <fieldset>
+        <legend>Advanced return and exchange options?</legend>
+        <label class="option"><input type="radio" name="returns" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="returns" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
 
-      <label class="subheader">9. How many packages for next month? Any holiday sales coming up?</label>
-      <textarea name="ui_disc_q9" placeholder="Rep notes..."></textarea>
+      <!-- Remaining Users + Feature questions appended here -->
+      <fieldset>
+        <legend>How many users do you need?</legend>
+        <div class="grid cols-2 extra-gap with-divider">
+          <label class="option"><input type="radio" name="users" value="1 User"><div><div class="opt-title">1 User</div></div></label>
+          <label class="option"><input type="radio" name="users" value="2-3 Users"><div><div class="opt-title">2–3 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="4-10 Users"><div><div class="opt-title">4–10 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="11-15 Users"><div><div class="opt-title">11–15 Users</div></div></label>
+        </div>
+      </fieldset>
 
-      <label class="subheader">10. When are you looking to get this implemented?</label>
-      <textarea name="ui_disc_q10" placeholder="Rep notes..."></textarea>
+      <fieldset>
+        <legend>Unlimited rule automations?</legend>
+        <label class="option"><input type="radio" name="rules" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="rules" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Auto Routing or Auto Split?</legend>
+        <label class="option"><input type="radio" name="routing" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="routing" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Rate Shopper?</legend>
+        <label class="option"><input type="radio" name="rates" value="Freemium Rate Shopper"><div><div class="opt-title">Freemium Rate Shopper</div></div></label>
+        <label class="option"><input type="radio" name="rates" value="Advanced Rate Shopper"><div><div class="opt-title">Advanced Rate Shopper</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>ODBC?</legend>
+        <label class="option"><input type="radio" name="odbc" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="odbc" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>API Access?</legend>
+        <label class="option"><input type="radio" name="api_access" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="api_access" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Phone Support or Dedicated AM?</legend>
+        <label class="option"><input type="radio" name="support" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Phone Support"><div><div class="opt-title">Phone Support</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Dedicated AM"><div><div class="opt-title">Dedicated Account Manager</div></div></label>
+      </fieldset>
     </div>
 
     <div class="banner" style="margin-top:12px">
@@ -750,15 +826,12 @@
     {name:'Zonos',slug:'zonos',aliases:[]}
   ];
 
-  // Toggle sections and swap logo (no auto-scroll)
+  // Toggle sections and swap logo (update: removed standalone UI users/shipments/features cards)
   qa('input[name=platform]').forEach(function(r){
     r.addEventListener('change', function(){
       var v = q('input[name=platform]:checked'); v = v ? v.value : '';
       show(q('#sec-api'), v==='API');
       show(q('#sec-api-discovery'), v==='API');
-      show(q('#sec-ui-users'), v==='UI');
-      show(q('#sec-ui-shipments'), v==='UI');
-      show(q('#sec-ui-features'), v==='UI');
       show(q('#sec-ui-discovery'), v==='UI');
       show(q('#sec-addons'), v==='UI');     // add-ons only for UI
       show(q('#sec-actions'), !!v);         // actions for both paths
@@ -1184,7 +1257,7 @@
     if(window.uiStorePicker){ uiStorePicker.set([]); }
 
     [q('#sec-api'),q('#sec-api-discovery'),
-     q('#sec-ui-users'),q('#sec-ui-shipments'),q('#sec-ui-features'),q('#sec-ui-discovery'),
+     q('#sec-ui-discovery'),
      q('#sec-addons'),q('#sec-actions')].forEach(function(s){ s.classList.add('hidden'); });
 
     q('#sec-result').classList.remove('show');
@@ -1210,7 +1283,6 @@
       lines.push('- 3PL functionality: ' + (a.answers.api_3pl || '—'));
       lines.push('- Platform Elements: ' + (a.answers.api_pe || '—'));
       lines.push('- Estimated shipments each month: ' + (a.answers.api_shipments || '—'));
-      // Note: Discovery note fields remain for rep reference only.
     } else {
       lines.push('Platform: ShipStation UI');
       lines.push('Recommended Plan: '+base.recommended + (base.priceText? ' — '+base.priceText : ''));
