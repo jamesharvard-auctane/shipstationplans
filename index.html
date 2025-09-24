@@ -7,19 +7,11 @@
 <style>
   /* ===== ShipStation-leaning Dark Theme + Consistent Spacing ===== */
   :root{
-    /* Dark, ship-tech vibe with blue + soft green accents */
-    --bg:#0b0f14; 
-    --card:#121822; 
-    --muted:#9fb3c8; 
     /* Base palette (dark UI) */
     --bg:#0b0f14;
     --bg2:#0b1016;
     --card:#101723;
     --text:#e6edf3;
-    --accent:#7cc4ff;    /* bright ship-blue */
-    --accent2:#4de1c1;   /* fresh green accent */
-    --border:#1f2937; 
-    --focus:#7cc4ff55;
     --muted:#9fb3c8;
     --border:#1f2a3a;
 
@@ -41,12 +33,10 @@
     margin:0;
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
     color:var(--text);
-    background:linear-gradient(180deg,#0b0f14,#0b1016 40%,#0b0f14);
     background:linear-gradient(180deg,var(--bg),var(--bg2) 40%,var(--bg));
   }
   .container{max-width:980px;margin:0 auto;padding:20px}
 
-  /* Header centered */
   /* Header */
   header{
     display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -55,7 +45,6 @@
   .brand{height:auto;max-width:260px;width:50vw;min-width:160px}
   .title{font-size:clamp(20px,2.6vw,28px);font-weight:700}
   .subtitle{color:var(--muted);font-size:14px}
-  .pill{padding:6px 10px;border-radius:999px;background:#0e1420;border:1px solid var(--border);font-size:12px;color:var(--muted)}
   .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
   .pill{
     padding:6px 10px;border-radius:999px;background:#0e1420;border:1px solid var(--border);
@@ -98,12 +87,6 @@
   }
   textarea{min-height:96px;resize:vertical}
 
-  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  .section-title{font-size:18px;font-weight:700;margin:6px 0 14px;border-left:4px solid var(--accent);padding-left:10px}
-  fieldset{border:none;padding:0;margin:0 0 8px}
-  /* Uniform question text across legends & subheaders */
-  legend,.subheader{font-weight:700;margin:14px 0 8px;font-size:15px;color:var(--text)}
-  label.option{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0f1520;cursor:pointer}
   /* Radio/checkbox options */
   label.option{
     display:flex;align-items:flex-start;gap:10px;
@@ -118,28 +101,17 @@
   .grid{display:grid;gap:10px}
   @media(min-width:700px){.cols-2{grid-template-columns:1fr 1fr}}
 
-  /* Desktop two-column niceties */
   /* Two-column niceties */
   @media(min-width:900px){
     .cols-2.extra-gap{gap:24px}
     .cols-2.with-divider > *:nth-child(2n){
       border-left:1px solid var(--border);
-      padding-left:18px;
-      margin-left:6px;
       padding-left:18px;margin-left:6px;
     }
   }
 
-  select, textarea, input[type=text]{
-    width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);
-    background:#0f1520;color:var(--text)
-  }
-  textarea{min-height:90px;resize:vertical}
-
-  /* Buttons right-aligned per your last change */
   /* Buttons (aligned right) */
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;justify-content:flex-end}
-  .btn{appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;color:#061016;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 20px rgba(80,180,220,.35)}
   .btn{
     appearance:none;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
     color:#061016;background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -153,8 +125,6 @@
   .result{display:none}
   .result.show{display:block}
   .badges{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-  .badge{border:1px solid var(--border);background:#0f1520;border-radius:10px;padding:6px 10px;font-size:12px}
-  .banner{border:1px dashed #2b3a4f;background:#0d1420;padding:14px;border-radius:12px;margin:12px 0}
   .badge{
     border:1px solid var(--border);background:#0f1624;border-radius:10px;
     padding:6px 10px;font-size:12px
@@ -169,7 +139,6 @@
   th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
   th{color:var(--muted);font-weight:600}
   .muted{color:var(--muted)}
-  input:focus-visible + .opt-title, label.option:has(input:focus-visible){outline:3px solid var(--focus)}
 
   /* Focus states */
   input:focus-visible + .opt-title,
@@ -177,11 +146,17 @@
 
   /* Collapsible details */
   details.hint{margin:6px 0 0 28px}
-@@ -97,13 +157,29 @@
+  details.hint summary{cursor:pointer;color:var(--muted);list-style:none}
+  details.hint summary::before{content:'▸';display:inline-block;margin-right:6px;transition:transform .15s ease}
+  details.hint[open] summary::before{transform:rotate(90deg)}
+  details.hint .hint-lines{padding:6px 0 2px}
+  .hint-group{margin:4px 0}
+  .hint-title{font-size:12px;color:#c9d7e1;text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px}
+  .hint-line{font-size:13px;color:var(--muted)}
+
   /* Standalone spacing block */
   .solo-block{margin-top:22px;padding-top:10px;border-top:1px dashed var(--border)}
 
-  /* Store picker bits remain tuned to dark theme */
   /* Discovery helpers */
   .discovery-lead{font-size:13px;color:var(--muted);margin:-2px 0 12px}
   .checklist{display:grid;grid-template-columns:1fr;gap:10px}
@@ -193,16 +168,12 @@
 
   /* Store picker (typeahead) */
   .tagpicker{position:relative}
-  .tagchips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 8px}
-  .tagchip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#0f1520;border:1px solid var(--border);font-size:12px}
   .tagchips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 var(--q-gap)}
   .tagchip{
     display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
     background:#0f1624;border:1px solid var(--border);font-size:12px
   }
   .tagchip button{all:unset;cursor:pointer;font-weight:700;color:var(--muted)}
-  .taginput{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0f1520;color:var(--text)}
-  .suggest{position:absolute;z-index:20;left:0;right:0;top:100%;margin-top:4px;background:#0f1520;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:230px;overflow:auto}
   .taginput{background:#0f1624}
   .suggest{
     position:absolute;z-index:20;left:0;right:0;top:100%;margin-top:4px;
@@ -212,11 +183,23 @@
   .suggest .opt{padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--border)}
   .suggest .opt:last-child{border-bottom:none}
   .suggest .opt[aria-selected="true"], .suggest .opt:hover{background:#101826}
-@@ -124,11 +200,11 @@
+  .tagerror{margin-top:6px;color:#ffb0b0;font-size:12px;min-height:16px}
+
+  /* Validation feedback */
+  .invalid{box-shadow:0 0 0 2px #ff6666 inset}
+  .error-banner{background:#1b0b0bcc;border:1px solid #ff6666;color:#fff;padding:10px;border-radius:10px;margin-bottom:10px}
+
+  /* >>> Extra breathing room for the API flow <<< */
+  #sec-api{scroll-margin-top:12px}
+  #sec-api fieldset{margin-bottom:18px}
+  #sec-api label.option{padding:16px}
+  #sec-api .section-title{margin-bottom:18px}
+  @media(min-width:900px){
+    #sec-api fieldset{margin-bottom:34px}
+    #sec-api .cols-2.extra-gap{gap:32px}
     #sec-api .solo-block{margin-top:36px;padding-top:16px}
   }
 </style>
-
 </head>
 <body>
 <div class="container">
@@ -225,7 +208,20 @@
     <img class="brand" id="brandLogo" src="Auctane%20BoxedLockup%20White%20RGB.png" alt="Auctane" />
     <div class="title">ShipStation Platform and Plan Guide</div>
     <div class="subtitle">Mobile friendly guided discovery for field reps · Requirement based plan selection</div>
-@@ -149,6 +225,7 @@
+    <div class="row">
+      <span class="pill">UI or API Gate</span>
+      <span class="pill">Free • Starter • Standard • Premium</span>
+      <span class="pill">Shows what forced higher plan</span>
+    </div>
+  </header>
+
+  <!-- Step 1: Platform Gate -->
+  <section class="card" id="sec-platform">
+    <div class="section-title">Step 1 · Choose Platform</div>
+    <fieldset>
+      <legend>Where do they want to print their labels?</legend>
+      <div class="grid cols-2 extra-gap with-divider">
+        <label class="option">
           <input type="radio" name="platform" value="UI">
           <div><div class="opt-title">In our app (ShipStation UI)</div></div>
         </label>
@@ -233,12 +229,17 @@
         <label class="option">
           <input type="radio" name="platform" value="API">
           <div><div class="opt-title">In their system (ShipStation API)</div></div>
-@@ -163,16 +240,22 @@
+        </label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- API Path -->
+  <section class="card hidden" id="sec-api">
+    <div class="section-title">API Path · Discovery Guide</div>
     <fieldset>
       <legend>Do they have access to developer resources?</legend>
       <div class="grid cols-2 extra-gap with-divider">
-        <label class="option"><input type="radio" name="api_dev" value="Yes"><div><div class="opt-title">Yes</div></div></label>
-        <label class="option"><input type="radio" name="api_dev" value="No"><div><div class="opt-title">No</div></div></label>
         <label class="option">
           <input type="radio" name="api_dev" value="Yes"><div><div class="opt-title">Yes</div></div>
         </label>
@@ -258,7 +259,19 @@
       <fieldset>
         <legend>Do they need Platform Elements?</legend>
         <label class="option"><input type="radio" name="api_pe" value="Yes"><div><div class="opt-title">Yes</div></div></label>
-@@ -192,11 +275,12 @@
+        <label class="option"><input type="radio" name="api_pe" value="No"><div><div class="opt-title">No</div></div></label>
+      </fieldset>
+    </div>
+  </section>
+
+  <!-- ==== API: Discovery + Checklist ==== -->
+  <section class="card hidden" id="sec-api-discovery">
+    <div id="api-error" class="error-banner hidden"></div>
+    <div class="section-title">Discovery Basics</div>
+    <div class="discovery-lead">DISCOVERY BASICS: Use these questions to better understand a merchant's business objectives. Not asking all of these questions could lead to gaps in their process and not fully understanding their objectives, thus not creating value.</div>
+
+    <div class="grid">
+      <label class="subheader" for="api_disc_q1">1. What type of products do you sell?</label>
       <textarea id="api_disc_q1" name="api_disc_q1" placeholder="Rep notes..."></textarea>
 
       <label class="subheader">2. Where do you sell your products today?</label>
@@ -266,14 +279,59 @@
       <div class="tagpicker" id="apiStorePicker">
         <div class="tagchips" data-role="chips"></div>
         <input class="taginput" type="text" placeholder="Start typing a store (e.g., Shopify, Amazon, WooCommerce)…" aria-label="Store search" />
-        <div class="suggest hidden" data-role="suggest"></div>
-        <div class="tagerror" data-role="error"></div>
         <div class="suggest hidden" role="listbox"></div>
         <div class="tagerror" aria-live="polite"></div>
         <input type="hidden" name="api_disc_q2" value="[]">
       </div>
 
-@@ -251,6 +335,7 @@
+      <label class="subheader" for="api_shipments">How many shipments each month?</label>
+      <select name="api_shipments" id="api_shipments">
+        <option value="">Select...</option>
+        <option>10</option><option>50</option><option>100</option><option>500</option>
+        <option>1,000</option><option>2,000</option><option>5,000</option><option>7,500</option>
+        <option>10,000</option><option>15,000</option><option>20,000</option><option>20,000+</option>
+      </select>
+
+      <label class="subheader">BYOA?</label>
+      <div class="grid cols-2">
+        <label class="option"><input type="radio" name="byoa" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="byoa" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </div>
+
+      <label class="subheader" for="api_disc_carriers">What carriers are you shipping with?</label>
+      <textarea id="api_disc_carriers" name="api_disc_carriers" placeholder="Rep notes..."></textarea>
+
+      <label class="subheader">Do you ship internationally?</label>
+      <div class="grid cols-2">
+        <label class="option"><input type="radio" name="intl" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="intl" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </div>
+
+      <label class="subheader" for="api_disc_q6">6. How are you managing inventory?</label>
+      <textarea id="api_disc_q6" name="api_disc_q6" placeholder="Rep notes..."></textarea>
+
+      <fieldset>
+        <legend>Inventory management level?</legend>
+        <label class="option"><input type="radio" name="inv" value="None"><div><div class="opt-title">None</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="Product Catalog and Inventory Grid"><div><div class="opt-title">Product Catalog and Inventory Grid</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="Basic Inventory Management"><div><div class="opt-title">Basic Inventory Management</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="Advanced Inventory Management"><div><div class="opt-title">Advanced Inventory Management</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Warehouse management level?</legend>
+        <label class="option"><input type="radio" name="wm" value="Standard packing slips"><div><div class="opt-title">Standard packing slips</div></div></label>
+        <label class="option"><input type="radio" name="wm" value="Standard Pick Lists and Packing Slips"><div><div class="opt-title">Standard Pick Lists and Packing Slips</div></div></label>
+        <label class="option"><input type="radio" name="wm" value="Advanced Warehouse Management"><div><div class="opt-title">Advanced Warehouse Management</div></div></label>
+        <label class="option"><input type="radio" name="wm" value="All Warehouse Management features"><div><div class="opt-title">All Warehouse Management features</div></div></label>
+      </fieldset>
+
+      <label class="subheader" for="api_disc_q7">7. How are you managing returns?</label>
+      <textarea id="api_disc_q7" name="api_disc_q7" placeholder="Rep notes..."></textarea>
+
+      <fieldset>
+        <legend>Advanced return and exchange options?</legend>
+        <label class="option"><input type="radio" name="returns" value="No"><div><div class="opt-title">No</div></div></label>
         <label class="option"><input type="radio" name="returns" value="Yes"><div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
@@ -281,31 +339,79 @@
       <fieldset>
         <legend>How many users do you need?</legend>
         <div class="grid cols-2 extra-gap with-divider">
-@@ -299,10 +384,6 @@
+          <label class="option"><input type="radio" name="users" value="1 User"><div><div class="opt-title">1 User</div></div></label>
+          <label class="option"><input type="radio" name="users" value="2-3 Users"><div><div class="opt-title">2–3 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="4-10 Users"><div><div class="opt-title">4–10 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="11-15 Users"><div><div class="opt-title">11–15 Users</div></div></label>
+        </div>
       </fieldset>
-    </div>
 
-    <div class="banner" style="margin-top:12px">
-      <strong>RECAP HERE & CONFIRM</strong> – “FROM WHAT I AM HEARING <em>[INSERT RECAP STATEMENT FROM BOXES ABOVE]</em> IS THAT CORRECT?”
+      <fieldset>
+        <legend>Unlimited rule automations?</legend>
+        <label class="option"><input type="radio" name="rules" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="rules" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Auto Routing or Auto Split?</legend>
+        <label class="option"><input type="radio" name="routing" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="routing" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Rate Shopper?</legend>
+        <label class="option"><input type="radio" name="rates" value="Freemium Rate Shopper"><div><div class="opt-title">Freemium Rate Shopper</div></div></label>
+        <label class="option"><input type="radio" name="rates" value="Advanced Rate Shopper"><div><div class="opt-title">Advanced Rate Shopper</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>ODBC?</legend>
+        <label class="option"><input type="radio" name="odbc" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="odbc" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>API Access?</legend>
+        <label class="option"><input type="radio" name="api_access" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="api_access" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Phone Support or Dedicated AM?</legend>
+        <label class="option"><input type="radio" name="support" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Phone Support"><div><div class="opt-title">Phone Support</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Dedicated AM"><div><div class="opt-title">Dedicated Account Manager</div></div></label>
+      </fieldset>
     </div>
 
     <div class="section-title" style="margin-top:16px">Process Discovery</div>
     <div class="discovery-lead">PROCESS DISCOVERY - GET VERY SPECIFIC! Make sure you get very detailed in their shipping process.</div>
 
-@@ -331,16 +412,16 @@
+    <label class="subheader" for="api_proc_q11">11. From cart to door, what does your fulfillment process look like?</label>
+    <textarea id="api_proc_q11" name="api_proc_q11" placeholder="Rep notes..."></textarea>
+
+    <div class="grid cols-2 extra-gap">
+      <div>
+        <label class="subheader" for="api_proc_pain1">11a. Pain/Challenge 1</label>
+        <textarea id="api_proc_pain1" name="api_proc_pain1" placeholder="Rep notes..."></textarea>
+      </div>
+      <div>
+        <label class="subheader" for="api_proc_pain2">11b. Pain/Challenge 2 (optional)</label>
+        <textarea id="api_proc_pain2" name="api_proc_pain2" placeholder="Optional"></textarea>
+      </div>
+    </div>
+    <div>
+      <label class="subheader" for="api_proc_pain3">11c. Pain/Challenge 3 (optional)</label>
+      <textarea id="api_proc_pain3" name="api_proc_pain3" placeholder="Optional"></textarea>
+    </div>
+
+    <div class="banner" style="margin-top:12px">
+      <strong>RECAP CHALLENGES AND GIVE VALUE STATEMENT</strong> – “IS THERE ANYTHING ELSE I SHOULD KNOW THAT WOULD MAKE THIS TRANSITION BETTER”?
+      <textarea name="api_value_recap" placeholder="Optional recap…" style="margin-top:10px"></textarea>
+    </div>
 
     <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
     <div class="checklist">
-      <label><input type="checkbox" name="api_onboard" value="Connect Selling Channel"> <span>Connect Selling Channel</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set Ship From Location"> <span>Set Ship From Location</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set up Carriers"> <span>Set up Carriers</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set up Automation (at least 1)"> <span>Set up Automation (at least 1)</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Discuss/Explain Inventory"> <span>Discuss/Explain Inventory</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Discuss/Explain Returns"> <span>Discuss/Explain Returns</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Set up Subscription w/ ACH or Card"> <span>Set up Subscription w/ ACH or Card</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Configure a Label / Ensure they know how to print"> <span>Configure a Label / Ensure they know how to print</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Support Resources"> <span>Support Resources</span></label>
-      <label><input type="checkbox" name="api_onboard" value="Definitive Next Steps / Follow Up"> <span>Definitive Next Steps / Follow Up</span></label>
       <label><input type="checkbox" name="onb" value="Connect Selling Channel"> Connect Selling Channel</label>
       <label><input type="checkbox" name="onb" value="Set Ship From Location"> Set Ship From Location</label>
       <label><input type="checkbox" name="onb" value="Set up Carriers"> Set up Carriers</label>
@@ -319,7 +425,14 @@
     </div>
   </section>
 
-@@ -355,11 +436,12 @@
+  <!-- ==== UI: Discovery + Checklist ==== -->
+  <section class="card hidden" id="sec-ui-discovery">
+    <div id="ui-error" class="error-banner hidden"></div>
+    <div class="section-title">Discovery Basics</div>
+    <div class="discovery-lead">DISCOVERY BASICS: Use these questions to better understand a merchant's business objectives.</div>
+
+    <div class="grid">
+      <label class="subheader" for="ui_disc_q1">1. What type of products do you sell?</label>
       <textarea id="ui_disc_q1" name="ui_disc_q1" placeholder="Rep notes..."></textarea>
 
       <label class="subheader">2. Where do you sell your products today?</label>
@@ -327,14 +440,59 @@
       <div class="tagpicker" id="uiStorePicker">
         <div class="tagchips" data-role="chips"></div>
         <input class="taginput" type="text" placeholder="Start typing a store (e.g., Shopify, Amazon, WooCommerce)…" aria-label="Store search" />
-        <div class="suggest hidden" data-role="suggest"></div>
-        <div class="tagerror" data-role="error"></div>
         <div class="suggest hidden" role="listbox"></div>
         <div class="tagerror" aria-live="polite"></div>
         <input type="hidden" name="ui_disc_q2" value="[]">
       </div>
 
-@@ -414,6 +496,7 @@
+      <label class="subheader" for="shipments">How many shipments each month?</label>
+      <select name="shipments" id="shipments">
+        <option value="">Select...</option>
+        <option>10</option><option>50</option><option>100</option><option>500</option>
+        <option>1,000</option><option>2,000</option><option>5,000</option><option>7,500</option>
+        <option>10,000</option><option>15,000</option><option>20,000</option><option>20,000+</option>
+      </select>
+
+      <label class="subheader">BYOA?</label>
+      <div class="grid cols-2">
+        <label class="option"><input type="radio" name="byoa" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="byoa" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </div>
+
+      <label class="subheader" for="ui_disc_carriers">What carriers are you shipping with?</label>
+      <textarea id="ui_disc_carriers" name="ui_disc_carriers" placeholder="Rep notes..."></textarea>
+
+      <label class="subheader">Do you ship internationally?</label>
+      <div class="grid cols-2">
+        <label class="option"><input type="radio" name="intl" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="intl" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </div>
+
+      <label class="subheader" for="ui_disc_q6">6. How are you managing inventory?</label>
+      <textarea id="ui_disc_q6" name="ui_disc_q6" placeholder="Rep notes..."></textarea>
+
+      <fieldset>
+        <legend>Inventory management level?</legend>
+        <label class="option"><input type="radio" name="inv" value="None"><div><div class="opt-title">None</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="Product Catalog and Inventory Grid"><div><div class="opt-title">Product Catalog and Inventory Grid</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="Basic Inventory Management"><div><div class="opt-title">Basic Inventory Management</div></div></label>
+        <label class="option"><input type="radio" name="inv" value="Advanced Inventory Management"><div><div class="opt-title">Advanced Inventory Management</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Warehouse management level?</legend>
+        <label class="option"><input type="radio" name="wm" value="Standard packing slips"><div><div class="opt-title">Standard packing slips</div></div></label>
+        <label class="option"><input type="radio" name="wm" value="Standard Pick Lists and Packing Slips"><div><div class="opt-title">Standard Pick Lists and Packing Slips</div></div></label>
+        <label class="option"><input type="radio" name="wm" value="Advanced Warehouse Management"><div><div class="opt-title">Advanced Warehouse Management</div></div></label>
+        <label class="option"><input type="radio" name="wm" value="All Warehouse Management features"><div><div class="opt-title">All Warehouse Management features</div></div></label>
+      </fieldset>
+
+      <label class="subheader" for="ui_disc_q7">7. How are you managing returns?</label>
+      <textarea id="ui_disc_q7" name="ui_disc_q7" placeholder="Rep notes..."></textarea>
+
+      <fieldset>
+        <legend>Advanced return and exchange options?</legend>
+        <label class="option"><input type="radio" name="returns" value="No"><div><div class="opt-title">No</div></div></label>
         <label class="option"><input type="radio" name="returns" value="Yes"><div><div class="opt-title">Yes</div></div></label>
       </fieldset>
 
@@ -342,31 +500,79 @@
       <fieldset>
         <legend>How many users do you need?</legend>
         <div class="grid cols-2 extra-gap with-divider">
-@@ -462,10 +545,6 @@
+          <label class="option"><input type="radio" name="users" value="1 User"><div><div class="opt-title">1 User</div></div></label>
+          <label class="option"><input type="radio" name="users" value="2-3 Users"><div><div class="opt-title">2–3 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="4-10 Users"><div><div class="opt-title">4–10 Users</div></div></label>
+          <label class="option"><input type="radio" name="users" value="11-15 Users"><div><div class="opt-title">11–15 Users</div></div></label>
+        </div>
       </fieldset>
-    </div>
 
-    <div class="banner" style="margin-top:12px">
-      <strong>RECAP HERE & CONFIRM</strong> – “FROM WHAT I AM HEARING <em>[INSERT RECAP STATEMENT FROM BOXES ABOVE]</em> IS THAT CORRECT?”
+      <fieldset>
+        <legend>Unlimited rule automations?</legend>
+        <label class="option"><input type="radio" name="rules" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="rules" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Auto Routing or Auto Split?</legend>
+        <label class="option"><input type="radio" name="routing" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="routing" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Rate Shopper?</legend>
+        <label class="option"><input type="radio" name="rates" value="Freemium Rate Shopper"><div><div class="opt-title">Freemium Rate Shopper</div></div></label>
+        <label class="option"><input type="radio" name="rates" value="Advanced Rate Shopper"><div><div class="opt-title">Advanced Rate Shopper</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>ODBC?</legend>
+        <label class="option"><input type="radio" name="odbc" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="odbc" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>API Access?</legend>
+        <label class="option"><input type="radio" name="api_access" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="api_access" value="Yes"><div><div class="opt-title">Yes</div></div></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Phone Support or Dedicated AM?</legend>
+        <label class="option"><input type="radio" name="support" value="No"><div><div class="opt-title">No</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Phone Support"><div><div class="opt-title">Phone Support</div></div></label>
+        <label class="option"><input type="radio" name="support" value="Dedicated AM"><div><div class="opt-title">Dedicated Account Manager</div></div></label>
+      </fieldset>
     </div>
 
     <div class="section-title" style="margin-top:16px">Process Discovery</div>
     <div class="discovery-lead">PROCESS DISCOVERY - GET VERY SPECIFIC!</div>
 
-@@ -494,16 +573,16 @@
+    <label class="subheader" for="ui_proc_q11">11. From cart to door, what does your fulfillment process look like?</label>
+    <textarea id="ui_proc_q11" name="ui_proc_q11" placeholder="Rep notes..."></textarea>
+
+    <div class="grid cols-2 extra-gap">
+      <div>
+        <label class="subheader" for="ui_proc_pain1">11a. Pain/Challenge 1</label>
+        <textarea id="ui_proc_pain1" name="ui_proc_pain1" placeholder="Rep notes..."></textarea>
+      </div>
+      <div>
+        <label class="subheader" for="ui_proc_pain2">11b. Pain/Challenge 2 (optional)</label>
+        <textarea id="ui_proc_pain2" name="ui_proc_pain2" placeholder="Optional"></textarea>
+      </div>
+    </div>
+    <div>
+      <label class="subheader" for="ui_proc_pain3">11c. Pain/Challenge 3 (optional)</label>
+      <textarea id="ui_proc_pain3" name="ui_proc_pain3" placeholder="Optional"></textarea>
+    </div>
+
+    <div class="banner" style="margin-top:12px">
+      <strong>RECAP CHALLENGES AND GIVE VALUE STATEMENT</strong> – “IS THERE ANYTHING ELSE I SHOULD KNOW THAT WOULD MAKE THIS TRANSITION BETTER”?
+      <textarea name="ui_value_recap" placeholder="Optional recap…" style="margin-top:10px"></textarea>
+    </div>
 
     <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
     <div class="checklist">
-      <label><input type="checkbox" name="ui_onboard" value="Connect Selling Channel"> <span>Connect Selling Channel</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Set Ship From Location"> <span>Set Ship From Location</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Set up Carriers"> <span>Set up Carriers</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Set up Automation (at least 1)"> <span>Set up Automation (at least 1)</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Discuss/Explain Inventory"> <span>Discuss/Explain Inventory</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Discuss/Explain Returns"> <span>Discuss/Explain Returns</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Set up Subscription w/ ACH or Card"> <span>Set up Subscription w/ ACH or Card</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Configure a Label / Ensure they know how to print"> <span>Configure a Label / Ensure they know how to print</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Support Resources"> <span>Support Resources</span></label>
-      <label><input type="checkbox" name="ui_onboard" value="Definitive Next Steps / Follow Up"> <span>Definitive Next Steps / Follow Up</span></label>
       <label><input type="checkbox" name="onb" value="Connect Selling Channel"> Connect Selling Channel</label>
       <label><input type="checkbox" name="onb" value="Set Ship From Location"> Set Ship From Location</label>
       <label><input type="checkbox" name="onb" value="Set up Carriers"> Set up Carriers</label>
@@ -380,30 +586,68 @@
     </div>
   </section>
 
-@@ -564,59 +643,123 @@
+  <!-- Add ons (UI only) -->
+  <section class="card hidden" id="sec-addons">
+    <div class="section-title">Add ons</div>
+    <fieldset>
+      <legend>Do they need any of these add ons?</legend>
+      <div class="grid cols-2 extra-gap with-divider">
+        <label class="option"><input type="checkbox" name="addons" value="Fulfillment:0"><div><div class="opt-title">Fulfillment</div></div></label>
+        <label class="option"><input type="checkbox" name="addons" value="3PL Manager:50"><div><div class="opt-title">3PL Manager ($50 per month)</div></div></label>
+        <label class="option"><input type="checkbox" name="addons" value="Dropship Manager:149"><div><div class="opt-title">Dropship Manager ($149 per month)</div></div></label>
+      </div>
+    </fieldset>
+  </section>
+
+  <!-- Shared Actions -->
+  <section class="card hidden" id="sec-actions">
+    <div class="actions">
+      <button class="btn" id="btn-calc">Show Recommendation</button>
+      <button class="btn secondary" id="btn-reset" type="button">Reset</button>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="card result" id="sec-result">
+    <div class="section-title">Recommendation</div>
+    <div class="banner" id="rec-banner"></div>
+    <div class="badges" id="driver-badges"></div>
+    <table id="recap-table"></table>
+    <div class="actions">
+      <button class="btn link" id="btn-copy" type="button">Copy Summary</button>
+      <button class="btn link" id="btn-download" type="button">Download JSON</button>
+    </div>
+    <div class="subtitle muted" style="margin-top:10px">We pick the lowest cost plan that satisfies all selected requirements. Drivers list shows which features required the recommended plan.</div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var q  = function(sel,ctx){return (ctx||document).querySelector(sel)};
+  var qa = function(sel,ctx){return Array.prototype.slice.call((ctx||document).querySelectorAll(sel))};
+  var show = function(el,yes){ el.classList.toggle('hidden', !yes); };
+
+  // Logos
+  var LOGO_DEFAULT = 'Auctane%20BoxedLockup%20White%20RGB.png';
+  var LOGO_UI  = 'ShipStation%20BoxedLockup%20White%20CMYK%20(1).png';
+  var LOGO_API = 'Logo_ShipStationAPI_WhiteGreen_RGB.png';
+
+  var PLAN_ORDER = ['Free','Starter','Standard','Premium'];
+  var PLAN_INDEX = {Free:0, Starter:1, Standard:2, Premium:3};
+
+  // Pricing (UI only)
+  var PRICES = {
+    "Free":    {"10": 0.00},
+    "Starter": {"50":14.99,"100":29.99,"500":39.99,"1000":79.99,"2000":119.99,"5000":174.99},
+    "Standard":{"50":29.99,"100":59.99,"500":89.99,"1000":149.99,"2000":174.99,"5000":249.99,"7500":299.99,"10000":599.99,"15000":649.99,"20000":799.99,"20000+":"Custom Pricing"},
     "Premium": {"50":349.99,"100":399.99,"500":449.99,"1000":599.99,"2000":699.99,"5000":799.99,"7500":949.99,"10000":1099.99,"15000":1349.99,"20000":1499.99,"20000+":"Custom Pricing"}
   };
 
-  /* ===== Store Integrations (truncated to what you provided earlier) ===== */
   /* ===== Supported Store Integrations (from your list) ===== */
   var STORE_INTEGRATIONS = [
-    {name:'Acumatica',slug:'acumatica',aliases:[]},{name:'Alibaba',slug:'alibaba',aliases:[]},
     {name:'Acumatica',slug:'acumatica',aliases:[]},
     {name:'Alibaba',slug:'alibaba',aliases:[]},
     {name:'Amazon Marketplace',slug:'amazon_marketplace',aliases:['amazon']},
-    {name:'AmeriCommerce',slug:'americommerce',aliases:[]},{name:'AmmoReady',slug:'ammoready',aliases:[]},
-    {name:'Back Market',slug:'back_market',aliases:[]},{name:'Bandcamp',slug:'bandcamp',aliases:[]},
-    {name:'Best Buy CA',slug:'best_buy_ca',aliases:['best buy canada']},{name:'Big Cartel',slug:'big_cartel',aliases:[]},
-    {name:'BigCommerce',slug:'bigcommerce',aliases:['big commerce']},{name:'Bluepark',slug:'bluepark',aliases:[]},
-    {name:'Bonanza',slug:'bonanza',aliases:[]},{name:'Brightpearl',slug:'brightpearl',aliases:[]},
-    {name:'Cdiscount',slug:'cdiscount',aliases:[]},{name:'ChannelEngine',slug:'channelengine',aliases:[]},
-    {name:'Channel Pilot',slug:'channel_pilot',aliases:[]},{name:'ChannelSale',slug:'channelsale',aliases:[]},
-    {name:'Cin7 Core',slug:'cin7_core',aliases:['dear systems','dear']},{name:'Cin7 Omni',slug:'cin7_omni',aliases:[]},
-    {name:'Convictional',slug:'convictional',aliases:[]},{name:'CoreCommerce',slug:'corecommerce',aliases:[]},
-    {name:'Coupang',slug:'coupang',aliases:[]},{name:'Cratejoy',slug:'cratejoy',aliases:[]},
-    {name:'CS-Cart',slug:'cs_cart',aliases:['cscart']},{name:'Darty',slug:'darty',aliases:[]},
-    {name:'eBay',slug:'ebay',aliases:['ebay stores']},{name:'Ecwid',slug:'ecwid',aliases:[]},
-    {name:'EKM',slug:'ekm',aliases:['ekm powershop']},{name:'Etsy',slug:'etsy',aliases:[]},
     {name:'AmeriCommerce',slug:'americommerce',aliases:[]},
     {name:'AmmoReady',slug:'ammoready',aliases:[]},
     {name:'Back Market',slug:'back_market',aliases:[]},
@@ -431,22 +675,6 @@
     {name:'EKM',slug:'ekm',aliases:['ekm powershop']},
     {name:'Etsy',slug:'etsy',aliases:[]},
     {name:'Extensiv (formerly Scout topShelf)',slug:'extensiv',aliases:['scout topshelf','topshelf']},
-    {name:'Faire',slug:'faire',aliases:[]},{name:'FNAC',slug:'fnac',aliases:[]},{name:'GeekSeller',slug:'geekseller',aliases:[]},
-    {name:'Groopdealz',slug:'groopdealz',aliases:[]},{name:'Groupon Goods',slug:'groupon_goods',aliases:['groupon']},
-    {name:'Handshake',slug:'handshake',aliases:[]},{name:'Houzz',slug:'houzz',aliases:[]},{name:'Idealo',slug:'idealo',aliases:[]},
-    {name:'InkSoft',slug:'inksoft',aliases:[]},{name:'Joom',slug:'joom',aliases:[]},{name:'Kaufland',slug:'kaufland',aliases:[]},
-    {name:'Lengow',slug:'lengow',aliases:[]},{name:'Liftoff',slug:'liftoff',aliases:[]},{name:'Linnworks',slug:'linnworks',aliases:[]},
-    {name:'Listing Mirror',slug:'listing_mirror',aliases:[]},{name:'Magento',slug:'magento',aliases:['adobe commerce']},
-    {name:'Marketplacer',slug:'marketplacer',aliases:[]},{name:'Mercado Libre',slug:'mercado_libre',aliases:['mercadolibre']},
-    {name:'Michaels',slug:'michaels',aliases:[]},{name:'MijoShop',slug:'mijoshop',aliases:[]},{name:'Mirakl',slug:'mirakl',aliases:[]},
-    {name:'Miva',slug:'miva',aliases:[]},{name:'Miva Connect',slug:'miva_connect',aliases:[]},{name:'Modern Retail',slug:'modern_retail',aliases:[]},
-    {name:'MoreCommerce',slug:'morecommerce',aliases:[]},{name:'Neto by Maropost',slug:'neto_by_maropost',aliases:['neto','maropost']},
-    {name:'Netsuite',slug:'netsuite',aliases:['oracle netsuite']},{name:'Newegg',slug:'newegg',aliases:[]},
-    {name:'Notonthehighstreet',slug:'notonthehighstreet',aliases:['noths']},{name:'OnBuy',slug:'onbuy',aliases:[]},
-    {name:'OpenCart',slug:'opencart',aliases:[]},{name:'Order Time',slug:'order_time',aliases:['ordertime']},
-    {name:'Overstock.com',slug:'overstock',aliases:['overstock com']},{name:'Oxatis',slug:'oxatis',aliases:[]},{name:'PayPal',slug:'paypal',aliases:[]},
-    {name:'PrestaShop',slug:'prestashop',aliases:['presta']},{name:'Quickbooks Commerce',slug:'quickbooks_commerce',aliases:['tradegecko','qbo commerce']},
-    {name:'Rakuten',slug:'rakuten',aliases:[]},{name:'Reverb',slug:'reverb',aliases:[]},{name:'RevolutionParts',slug:'revolutionparts',aliases:[]},
     {name:'Faire',slug:'faire',aliases:[]},
     {name:'FNAC',slug:'fnac',aliases:[]},
     {name:'GeekSeller',slug:'geekseller',aliases:[]},
@@ -489,13 +717,6 @@
     {name:'RevolutionParts',slug:'revolutionparts',aliases:[]},
     {name:'Rithum (formerly ChannelAdvisor)',slug:'rithum',aliases:['channeladvisor']},
     {name:'Salesforce Commerce Cloud',slug:'salesforce_commerce_cloud',aliases:['sfcc','demandware']},
-    {name:'Salesforce Core',slug:'salesforce_core',aliases:['salesforce']},{name:'Sears',slug:'sears',aliases:[]},
-    {name:'Sellbrite',slug:'sellbrite',aliases:[]},{name:'SellerActive',slug:'selleractive',aliases:[]},{name:'Shein',slug:'shein',aliases:[]},
-    {name:'Shift4Shop',slug:'shift4shop',aliases:['3dcart']},{name:'Shop.com',slug:'shop_com',aliases:['shop dot com']},
-    {name:'Shop Premium Outlets',slug:'shop_premium_outlets',aliases:['spo']},{name:'Shopify',slug:'shopify',aliases:['shopify plus']},
-    {name:'ShoppingFeed',slug:'shoppingfeed',aliases:[]},{name:'Shopware v6 Cloud',slug:'shopware_v6_cloud',aliases:['shopware']},
-    {name:'SimplyDepo',slug:'simplydepo',aliases:[]},{name:'Sophio',slug:'sophio',aliases:[]},{name:'SOS Inventory',slug:'sos_inventory',aliases:[]},
-    {name:'Spark Shipping',slug:'spark_shipping',aliases:[]},{name:'Spartoo',slug:'spartoo',aliases:[]},
     {name:'Salesforce Core',slug:'salesforce_core',aliases:['salesforce']},
     {name:'Sears',slug:'sears',aliases:[]},
     {name:'Sellbrite',slug:'sellbrite',aliases:[]},
@@ -513,15 +734,6 @@
     {name:'Spark Shipping',slug:'spark_shipping',aliases:[]},
     {name:'Spartoo',slug:'spartoo',aliases:[]},
     {name:'Square Online Store',slug:'square_online_store',aliases:['square online','square']},
-    {name:'Squarespace',slug:'squarespace',aliases:[]},{name:'Storenvy',slug:'storenvy',aliases:[]},{name:'SureDone',slug:'suredone',aliases:[]},
-    {name:'Tanga',slug:'tanga',aliases:[]},{name:'TikTok Shop',slug:'tiktok_shop',aliases:['tiktok']},{name:'Tophatter',slug:'tophatter',aliases:[]},
-    {name:'Turbify',slug:'turbify',aliases:['yahoo stores','yahoo small business']},{name:'UltraCart',slug:'ultracart',aliases:[]},
-    {name:'Visualsoft',slug:'visualsoft',aliases:[]},{name:'Volo Commerce',slug:'volo_commerce',aliases:[]},{name:'Volusion',slug:'volusion',aliases:[]},
-    {name:'VTEX',slug:'vtex',aliases:[]},{name:'Walmart',slug:'walmart',aliases:[]},{name:'Walmart Canada',slug:'walmart_canada',aliases:['walmart ca']},
-    {name:'Wayfair',slug:'wayfair',aliases:[]},{name:'Web Shop Manager',slug:'web_shop_manager',aliases:[]},{name:'Webflow',slug:'webflow',aliases:[]},
-    {name:'Weebly',slug:'weebly',aliases:[]},{name:'Wish',slug:'wish',aliases:[]},{name:'Wix',slug:'wix',aliases:[]},
-    {name:'WooCommerce',slug:'woocommerce',aliases:['woo']},{name:'X-Cart',slug:'x_cart',aliases:['xcart']},{name:'xentral',slug:'xentral',aliases:[]},
-    {name:'Yumbles',slug:'yumbles',aliases:[]},{name:'Zen Cart',slug:'zen_cart',aliases:['zencart']},{name:'Zoey',slug:'zoey',aliases:[]},
     {name:'Squarespace',slug:'squarespace',aliases:[]},
     {name:'Storenvy',slug:'storenvy',aliases:[]},
     {name:'SureDone',slug:'suredone',aliases:[]},
@@ -551,79 +763,226 @@
     {name:'Zonos',slug:'zonos',aliases:[]}
   ];
 
-@@ -628,7 +771,7 @@
+  // Toggle sections and swap logo
+  qa('input[name=platform]').forEach(function(r){
+    r.addEventListener('change', function(){
+      var v = q('input[name=platform]:checked'); v = v ? v.value : '';
+      show(q('#sec-api'), v==='API');
       show(q('#sec-api-discovery'), v==='API');
       show(q('#sec-ui-discovery'), v==='UI');
       show(q('#sec-addons'), v==='UI');     // add-ons only for UI
-      show(q('#sec-actions'), !!v);
       show(q('#sec-actions'), !!v);         // actions for both paths
       q('#sec-result').classList.remove('show');
 
       var logo = q('#brandLogo');
-@@ -823,130 +966,123 @@
+      if(v==='API'){ logo.src = LOGO_API; logo.alt='ShipStation API'; }
+      else if(v==='UI'){ logo.src = LOGO_UI; logo.alt='ShipStation'; }
+      else { logo.src = LOGO_DEFAULT; logo.alt='Auctane'; }
+    });
+  });
+
+  function normalizeShip(v){
+    if(!v) return '';
+    var s = String(v).trim().toLowerCase().replace(/,/g,'');
+    if(s.indexOf('>')===0 || s.indexOf('20000+')===0) return '20000+';
+    return s.replace(/^0+/,'');
+  }
+
+  /* Allowed plans (UI flow) */
+  function allowed(field, value){
+    switch(field){
+      case 'users':
+        if(value==='1 User') return new Set(['Free']);
+        if(value==='2-3 Users') return new Set(['Starter']);
+        if(value==='4-10 Users') return new Set(['Standard']);
+        if(value==='11-15 Users') return new Set(['Premium']);
+        break;
+      case 'shipments': {
+        var n = normalizeShip(value);
+        var ok = new Set();
+        PLAN_ORDER.forEach(function(p){
+          if(PRICES[p] && Object.prototype.hasOwnProperty.call(PRICES[p], n)) ok.add(p);
+        });
+        return ok;
+      }
+      case 'byoa':        return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Starter','Standard']);
+      case 'inv':
+        if(value==='None')                               return new Set(['Free']);
+        if(value==='Product Catalog and Inventory Grid') return new Set(['Starter']);
+        if(value==='Basic Inventory Management')         return new Set(['Standard']);
+        if(value==='Advanced Inventory Management')      return new Set(['Premium']);
+        break;
+      case 'wm':
+        if(value==='Standard packing slips')                return new Set(['Free']);
+        if(value==='Standard Pick Lists and Packing Slips') return new Set(['Starter']);
+        if(value==='Advanced Warehouse Management')         return new Set(['Standard']);
+        if(value==='All Warehouse Management features')     return new Set(['Premium']);
+        break;
+      case 'returns':    return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'rules':      return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'routing':    return (value==='Yes') ? new Set(['Premium']) : new Set(['Free','Starter','Standard']);
+      case 'rates':      return (value==='Advanced Rate Shopper') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'odbc':       return (value==='Yes') ? new Set(['Premium']) : new Set(['Free','Starter','Standard']);
+      case 'api_access': return (value==='Yes') ? new Set(['Standard','Premium']) : new Set(['Free','Starter']);
+      case 'support':
+        if(value==='No')            return new Set(['Free','Starter']);
+        if(value==='Phone Support') return new Set(['Standard']);
+        if(value==='Dedicated AM')  return new Set(['Premium']);
+        break;
+      default:
+        return new Set(PLAN_ORDER);
+    }
+    return new Set(PLAN_ORDER);
+  }
+
+  /* API discovery recommendation */
+  function recommendAPI(){
+    var answers = {
+      api_print: 'their system',
+      api_dev:       (q('input[name=api_dev]:checked')||{}).value || '',
+      api_3pl:       (q('input[name=api_3pl]:checked')||{}).value || '',
+      api_pe:        (q('input[name=api_pe]:checked')||{}).value  || '',
+      api_shipments: (q('#api_shipments')||{value:''}).value      || ''
+    };
+
+    var suggestion = 'ShipStation API';
+    var drivers = [];
+    var next = [];
+
+    if(answers.api_dev === 'No'){
+      suggestion = 'Connect with an API Partner';
+      drivers.push('No developer resources');
+      next.push('Make a partner introduction and gather requirements');
+    } else if(answers.api_dev === 'Yes'){
+      drivers.push('Developer resources available');
+      next.push('Proceed with ShipStation API solutioning');
+    }
+
+    if(answers.api_pe === 'Yes'){
+      suggestion = 'ShipStation API with Platform Elements';
+      drivers.push('Needs Platform Elements');
+      next.push('Include Platform Elements in architecture and rollout plan');
+    }
+    if(answers.api_3pl === 'Yes'){
+      suggestion += (suggestion.indexOf('with')===-1 ? ' with 3PL workflows' : ' and 3PL workflows');
+      drivers.push('Needs 3PL functionality');
+      next.push('Plan routing and order handoff design for 3PLs');
+    }
+
+    return {suggestion:suggestion, drivers:Array.from(new Set(drivers)), next:Array.from(new Set(next)), answers:answers};
+  }
+
+  /* UI plan recommendation */
+  function calcRecommendation(){
+    var platform = (q('input[name=platform]:checked')||{}).value || '';
+    var answers = {};
+    var addons = qa('input[name=addons]:checked').map(function(c){ return c.value; });
+
+    if(platform==='UI'){
+      var fields = ['users','shipments','byoa','inv','wm','returns','rules','routing','rates','odbc','api_access','support'];
+      fields.forEach(function(f){
+        if(f==='shipments'){
+          var val = q('#shipments').value; if(val) answers[f] = val;
+        } else {
+          var sel = q('input[name='+f+']:checked'); if(sel && sel.value) answers[f] = sel.value;
+        }
+      });
+    } else if(platform==='API'){
+      ['api_dev','api_3pl','api_pe'].forEach(function(f){
+        var sel = q('input[name='+f+']:checked'); if(sel && sel.value) answers[f] = sel.value;
+      });
+      var apiship = q('#api_shipments').value; if(apiship) answers.api_shipments = apiship;
+      addons = []; // no add-ons for API
+    }
+
+    if(platform!=='UI'){
+      return { platform:platform, answers:answers, addons:addons, recommended:null, priceText:null, drivers:[], totals:null };
+    }
+
+    var minIndexRequired = 0;
+    var feasible = new Set(PLAN_ORDER);
+    Object.keys(answers).forEach(function(field){
+      var set = allowed(field, answers[field]);
+      feasible = new Set(PLAN_ORDER.filter(function(p){ return feasible.has(p) && set.has(p); }));
+      var minTier = PLAN_ORDER.find(function(p){ return set.has(p); }) || 'Premium';
+      minIndexRequired = Math.max(minIndexRequired, PLAN_INDEX[minTier]);
+    });
+
+    var recommended = null;
+    for(var i=minIndexRequired;i<PLAN_ORDER.length;i++){
+      var pName = PLAN_ORDER[i];
+      if(feasible.has(pName)){ recommended = pName; break; }
+    }
+    if(!recommended) recommended = PLAN_ORDER[minIndexRequired];
+
+    var drivers = [];
+    Object.keys(answers).forEach(function(field){
+      var set = allowed(field, answers[field]);
+      var minTier = PLAN_ORDER.find(function(p){ return set.has(p); }) || 'Premium';
+      if(minTier === recommended) drivers.push(driverLabel(field, answers[field]));
+    });
+
+    var shipKey = normalizeShip(answers.shipments || '');
+    var planPrice = (shipKey && PRICES[recommended]) ? PRICES[recommended][shipKey] : undefined;
+    var addonSum = addons.reduce(function(sum, tag){
+      var parts = tag.split(':'); var dollars = parts[1] ? parseFloat(parts[1]) : 0;
+      return sum + (isNaN(dollars)?0:dollars);
+    }, 0);
+
+    var totals = { planPrice: planPrice, addonSum: addonSum, total: null };
+    var priceText;
+    if(planPrice === 'Custom Pricing'){
+      priceText = 'Custom Pricing'; totals.total = 'Custom Pricing';
+    } else if(typeof planPrice === 'number'){
+      totals.total = (planPrice + addonSum);
+      priceText = '$'+planPrice.toFixed(2)+'/mo';
+    } else {
+      priceText = 'Select shipments to show price';
+    }
+
+    return { platform:platform, answers:answers, addons:addons, recommended:recommended, priceText:priceText, drivers:drivers, totals:totals };
+  }
+
+  function driverLabel(field, value){
+    var labels = {
+      users: 'Users: '+value,
+      shipments: 'Shipments per month: '+value,
+      byoa: 'BYOA: '+value,
+      inv: 'Inventory level: '+value,
+      wm: 'Warehouse management level: '+value,
+      returns: 'Advanced returns and exchanges: '+value,
+      rules: 'Unlimited rule automations: '+value,
+      routing: 'Auto Routing or Auto Split: '+value,
+      rates: 'Rate Shopper: '+value,
+      odbc: 'ODBC: '+value,
+      api_access: 'API Access: '+value,
+      support: 'Support: '+value,
+      api_print: 'Where to print labels: '+value,
+      api_dev: 'Developer resources: '+value,
+      api_3pl: '3PL functionality: '+value,
+      api_pe: 'Platform Elements: '+value,
+      api_shipments: 'Estimated shipments per month: '+value
+    };
     return labels[field] || (field+': '+value);
   }
 
-  /* TagPicker: typeahead + chips with validation */
   /* ===== TagPicker: typeahead + chips with validation ===== */
   function TagPicker(rootEl, opts){
     this.root = rootEl;
     this.input = rootEl.querySelector('.taginput');
-    this.chipsEl = rootEl.querySelector('[data-role="chips"]');
-    this.suggestEl = rootEl.querySelector('[data-role="suggest"]');
-    this.errorEl = rootEl.querySelector('[data-role="error"]');
-    this.hidden = rootEl.querySelector('input[type=hidden]');
     this.suggest = rootEl.querySelector('.suggest');
     this.chipsBox = rootEl.querySelector('[data-role="chips"]');
     this.errorEl = rootEl.querySelector('.tagerror');
     this.hidden = rootEl.querySelector('input[type="hidden"]');
     this.items = (opts && opts.items) || [];
-    this.maxSuggestions = (opts && opts.maxSuggestions) || 8;
     this.selected = [];
-    this.highlightIndex = -1;
 
     var self = this;
-    function norm(s){ return String(s||'').trim().toLowerCase(); }
-
-    function matches(q, item){
-      if(!q) return false;
-      q = norm(q);
-      if(norm(item.name).includes(q)) return true;
-      if(item.aliases && item.aliases.some(function(a){ return norm(a).includes(q); })) return true;
-      return false;
-    }
-
-    this.renderChips = function(){
-      this.chipsEl.innerHTML = this.selected.map(function(it,i){
-        return '<span class="tagchip" data-idx="'+i+'">'+it.name+' <button title="Remove" aria-label="Remove '+it.name+'">×</button></span>';
     function renderChips(){
       self.chipsBox.innerHTML = self.selected.map(function(it,idx){
         return '<span class="tagchip" data-idx="'+idx+'">'+
                it.name+' <button title="Remove" aria-label="Remove">×</button></span>';
       }).join('');
-      this.hidden.value = JSON.stringify(this.selected.map(function(it){ return it.slug; }));
-    };
-
-    this.clearError = function(){ this.errorEl.textContent=''; };
-    this.showError = function(msg){ this.errorEl.textContent = msg || 'Store not found/supported.'; };
-
-    this.filtered = [];
-    this.updateSuggest = function(){
-      var qv = this.input.value;
-      if(!qv){ this.suggestEl.classList.add('hidden'); this.suggestEl.innerHTML=''; this.highlightIndex=-1; return; }
-      this.filtered = this.items.filter(function(it){
-        var taken = self.selected.some(function(s){ return s.slug===it.slug; });
-        return !taken && matches(qv,it);
-      }).slice(0, this.maxSuggestions);
-
-      if(this.filtered.length===0){
-        this.suggestEl.innerHTML = '<div class="opt muted">No matches</div>';
-        this.suggestEl.classList.remove('hidden');
-        this.highlightIndex = -1;
-        return;
-      }
-      this.suggestEl.innerHTML = this.filtered.map(function(it,idx){
-        return '<div class="opt" role="option" data-idx="'+idx+'" aria-selected="'+(idx===self.highlightIndex)+'">'+it.name+'</div>';
       self.hidden.value = JSON.stringify(self.selected.map(function(it){ return it.slug; }));
     }
     function filterItems(q){
@@ -639,19 +998,6 @@
       self.suggest.innerHTML = list.map(function(it,i){
         return '<div class="opt" role="option" data-slug="'+it.slug+'" data-name="'+it.name+'" aria-selected="'+(i===0?'true':'false')+'">'+it.name+'</div>';
       }).join('');
-      this.suggestEl.classList.remove('hidden');
-    };
-
-    this.add = function(item){
-      if(!item) return;
-      if(this.selected.some(function(s){ return s.slug===item.slug; })) return;
-      this.selected.push({name:item.name, slug:item.slug});
-      this.renderChips();
-      this.input.value='';
-      this.suggestEl.classList.add('hidden');
-      this.clearError();
-      this.input.focus();
-    };
       self.suggest.classList.remove('hidden');
     }
     function closeSuggest(){ self.suggest.classList.add('hidden'); }
@@ -666,11 +1012,6 @@
       renderChips(); clearError(); return true;
     }
 
-    this.removeIdx = function(idx){
-      if(idx<0 || idx>=this.selected.length) return;
-      this.selected.splice(idx,1);
-      this.renderChips();
-    };
     // input events
     this.input.addEventListener('input', function(){
       var list = filterItems(self.input.value);
@@ -678,29 +1019,20 @@
       clearError();
     });
 
-    this.input.addEventListener('input', function(){ self.updateSuggest(); self.clearError(); });
     this.input.addEventListener('keydown', function(e){
-      var key = e.key;
-      if(key==='ArrowDown'){
       var open = !self.suggest.classList.contains('hidden');
       if(e.key==='ArrowDown' && open){
         e.preventDefault();
-        if(self.filtered.length){ self.highlightIndex = (self.highlightIndex+1) % self.filtered.length; self.updateSuggestHighlight(); }
-      } else if(key==='ArrowUp'){
         var opts = qa('.opt', self.suggest);
         var idx = opts.findIndex(function(o){return o.getAttribute('aria-selected')==='true';});
         if(idx<opts.length-1){ opts[idx].setAttribute('aria-selected','false'); opts[idx+1].setAttribute('aria-selected','true'); }
       } else if(e.key==='ArrowUp' && open){
         e.preventDefault();
-        if(self.filtered.length){ self.highlightIndex = (self.highlightIndex-1+self.filtered.length) % self.filtered.length; self.updateSuggestHighlight(); }
-      } else if(key==='Enter'){
         var opts2 = qa('.opt', self.suggest);
         var idx2 = opts2.findIndex(function(o){return o.getAttribute('aria-selected')==='true';});
         if(idx2>0){ opts2[idx2].setAttribute('aria-selected','false'); opts2[idx2-1].setAttribute('aria-selected','true'); }
       } else if(e.key==='Enter'){
         e.preventDefault();
-        if(self.filtered.length && self.highlightIndex>=0){
-          self.add(self.filtered[self.highlightIndex]);
         var chosen = null;
         if(open){
           var sel = q('.opt[aria-selected="true"]', self.suggest);
@@ -720,32 +1052,14 @@
           pickBySlug(chosen.slug);
           self.input.value=''; closeSuggest();
         } else {
-          var qv = norm(self.input.value);
-          var exact = self.items.find(function(it){
-            return norm(it.name)===qv || (it.aliases||[]).some(function(a){ return norm(a)===qv; });
-          });
-          if(exact){ self.add(exact); }
-          else { self.showError('Store not found/supported.'); }
           // Unsupported store
           setError('Store not supported. Please select one from the list.');
         }
-      } else if(key==='Backspace' && !self.input.value){
-        self.removeIdx(self.selected.length-1);
       } else if(e.key==='Escape'){
         closeSuggest();
       }
     });
 
-    this.updateSuggestHighlight = function(){
-      Array.prototype.forEach.call(self.suggestEl.querySelectorAll('.opt'), function(el,i){
-        el.setAttribute('aria-selected', i===self.highlightIndex ? 'true':'false');
-      });
-    };
-
-    this.suggestEl.addEventListener('mousedown', function(e){
-      var opt = e.target.closest('.opt'); if(!opt) return;
-      var idx = parseInt(opt.getAttribute('data-idx'),10);
-      if(!isNaN(idx) && self.filtered[idx]) self.add(self.filtered[idx]);
     // click suggestion
     this.suggest.addEventListener('click', function(e){
       var el = e.target.closest('.opt'); if(!el) return;
@@ -753,24 +1067,15 @@
       self.input.value=''; closeSuggest(); self.input.focus();
     });
 
-    this.chipsEl.addEventListener('click', function(e){
     // remove chip
     this.chipsBox.addEventListener('click', function(e){
       if(e.target.tagName==='BUTTON'){
-        var chip = e.target.closest('.tagchip');
-        var idx = parseInt(chip.getAttribute('data-idx'),10);
-        self.removeIdx(idx);
         var wrap = e.target.closest('.tagchip'); if(!wrap) return;
         var idx = +wrap.getAttribute('data-idx'); self.selected.splice(idx,1);
         renderChips(); clearError();
       }
     });
 
-    this.set = function(values){
-      this.selected = [];
-      var map = {}; this.items.forEach(function(it){ map[it.slug]=it; });
-      (values||[]).forEach(function(sl){ if(map[sl]) self.selected.push({name:map[sl].name, slug:map[sl].slug}); });
-      this.renderChips();
     // expose setter
     this.set = function(arr){
       self.selected = (arr||[]).slice();
@@ -781,39 +1086,98 @@
   }
 
   /* ===== Validation (required fields per platform) ===== */
-@@ -969,7 +1105,6 @@
+  function validateRequired(){
+    var platform = (q('input[name=platform]:checked')||{}).value || '';
+    if(!platform){ alert('Please select a platform.'); return false; }
+
+    var scope = platform==='UI' ? q('#sec-ui-discovery') : q('#sec-api-discovery');
+    var errorBox = platform==='UI' ? q('#ui-error') : q('#api-error');
+    errorBox.classList.add('hidden'); errorBox.textContent = '';
+
+    // Clear prior invalid marks
+    qa('.invalid', scope).forEach(function(el){ el.classList.remove('invalid'); });
+
+    var optionalNames = new Set([
+      // Pains 11b/11c
+      platform==='UI' ? 'ui_proc_pain2' : 'api_proc_pain2',
+      platform==='UI' ? 'ui_proc_pain3' : 'api_proc_pain3',
+      // Recap challenges textarea
       platform==='UI' ? 'ui_value_recap' : 'api_value_recap'
     ]);
 
-    // Helper to mark invalid and collect messages
     var messages = [];
     function needText(sel, label){
       var el = q(sel, scope);
-@@ -1016,7 +1151,7 @@
+      if(!el) return true;
+      if(optionalNames.has(el.name)) return true;
+      if(!el.value || !el.value.trim()){
+        el.classList.add('invalid'); messages.push(label+' is required.'); return false;
+      }
+      return true;
+    }
+    function needSelect(sel, label){
+      var el = q(sel, scope);
+      if(!el || el.value) return true;
+      el.classList.add('invalid'); messages.push(label+' is required.'); return false;
+    }
+    function needRadio(name, label){
+      var picked = q('input[name="'+name+'"]:checked', scope);
+      if(picked) return true;
+      var groupEls = qa('input[name="'+name+'"]', scope);
+      if(groupEls.length){ groupEls[0].closest('fieldset')?.classList.add('invalid'); }
+      messages.push(label+' is required.');
+      return false;
+    }
+    function needStores(pickerId, label){
+      var picker = (pickerId==='uiStorePicker') ? window.uiStorePicker : window.apiStorePicker;
+      if(picker && picker.selected && picker.selected.length>0) return true;
+      var root = q('#'+pickerId);
+      if(root) root.classList.add('invalid');
+      messages.push(label+' is required.');
+      return false;
+    }
+
+    // Common requireds
+    var ok = true;
+    ok &= needText(platform==='UI' ? '#ui_disc_q1' : '#api_disc_q1', 'Products sold');
+    ok &= needStores(platform==='UI' ? 'uiStorePicker' : 'apiStorePicker', 'Where you sell (at least one store)');
+    ok &= needSelect(platform==='UI' ? '#shipments' : '#api_shipments', 'Shipments per month');
+    ok &= needRadio('byoa','BYOA selection');
+    ok &= needText(platform==='UI' ? '#ui_disc_carriers' : '#api_disc_carriers', 'Carriers');
+    ok &= needRadio('intl','International shipping selection');
+    ok &= needText(platform==='UI' ? '#ui_disc_q6' : '#api_disc_q6', 'Inventory management notes');
+    ok &= needRadio('inv','Inventory management level');
+    ok &= needRadio('wm','Warehouse management level');
     ok &= needText(platform==='UI' ? '#ui_disc_q7' : '#api_disc_q7', 'Returns notes');
     ok &= needRadio('returns','Advanced returns selection');
 
-    // Remaining feature/user questions (all required)
     // Remaining feature/user questions
     ok &= needRadio('users','User count');
     ok &= needRadio('rules','Unlimited rule automations');
     ok &= needRadio('routing','Auto Routing / Auto Split');
-@@ -1028,9 +1163,8 @@
+    ok &= needRadio('rates','Rate Shopper');
+    ok &= needRadio('odbc','ODBC');
+    ok &= needRadio('api_access','API Access');
+    ok &= needRadio('support','Support option');
+
     // Process discovery
     ok &= needText(platform==='UI' ? '#ui_proc_q11' : '#api_proc_q11', 'Process discovery (cart to door)');
     ok &= needText(platform==='UI' ? '#ui_proc_pain1' : '#api_proc_pain1', 'Pain/Challenge 1');
-    // 11b/11c optional; recap challenges optional
 
-    // API path radios also required when on API
     // API-only radios also required
     if(platform==='API'){
       ok &= needRadio('api_dev','Developer resources');
       ok &= needRadio('api_3pl','3PL functionality');
-@@ -1044,14 +1178,15 @@
+      ok &= needRadio('api_pe','Platform Elements');
+    }
+
+    if(!ok){
+      errorBox.textContent = 'Please complete the required items before showing a recommendation:\n- ' + messages.join('\n- ');
+      errorBox.classList.remove('hidden');
+      // Focus first invalid control
       var firstInvalid = q('.invalid', scope);
       if(firstInvalid){
         firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
-        // Try to focus a focusable descendant
         (firstInvalid.querySelector('input,textarea,select') || firstInvalid).focus?.();
       }
       return false;
@@ -826,32 +1190,147 @@
   function render(){
     // Block if required fields are missing
     if(!validateRequired()) return;
-@@ -1075,7 +1210,7 @@
+
+    var r = calcRecommendation();
+    var banner = q('#rec-banner');
+    var driversBox = q('#driver-badges');
+    var recap = q('#recap-table');
+
+    function storeNames(picker){
+      return (picker && picker.selected || []).map(function(it){ return it.name; });
+    }
+
+    if(r.platform==='API'){
+      var apiRec = recommendAPI();
+      var nextHTML = apiRec.next.length ? ('<div class="muted" style="margin-top:6px">Next steps: ' + apiRec.next.join(' · ') + '</div>') : '';
+      banner.innerHTML =
+        '<div><strong>Suggested Route:</strong> ' + (apiRec.suggestion || '—') + '</div>' + nextHTML;
+
+      driversBox.innerHTML = apiRec.drivers.length
         ? apiRec.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
         : '<span class="muted">No specific drivers selected yet.</span>';
 
-      // ==== Recap rows with ALL notes ====
       // Recap rows with ALL notes
       var rows = [
         ['Discovery Question','Answer'],
         ['Where to print labels', 'In their system'],
-@@ -1138,7 +1273,6 @@
+        ['Developer resources',  apiRec.answers.api_dev   || '—'],
+        ['3PL functionality',    apiRec.answers.api_3pl   || '—'],
+        ['Platform Elements',    apiRec.answers.api_pe    || '—'],
+        ['Estimated shipments each month', apiRec.answers.api_shipments || '—'],
+
+        // Discovery notes
+        ['Products sold', (q('#api_disc_q1').value||'—')],
+        ['Where they sell (stores)', storeNames(window.apiStorePicker).join(', ') || '—'],
+        ['BYOA', (q('input[name=byoa]:checked')||{}).value || '—'],
+        ['Carriers', (q('#api_disc_carriers').value||'—')],
+        ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
+        ['Inventory notes', (q('#api_disc_q6').value||'—')],
+        ['Inventory level', (q('input[name=inv]:checked')||{}).value || '—'],
+        ['Warehouse level', (q('input[name=wm]:checked')||{}).value || '—'],
+        ['Returns notes', (q('#api_disc_q7').value||'—')],
+        ['Advanced returns', (q('input[name=returns]:checked')||{}).value || '—'],
+
+        // Remaining selections
+        ['Users', (q('input[name=users]:checked')||{}).value || '—'],
+        ['Unlimited rules', (q('input[name=rules]:checked')||{}).value || '—'],
+        ['Auto Routing/Split', (q('input[name=routing]:checked')||{}).value || '—'],
+        ['Rate Shopper', (q('input[name=rates]:checked')||{}).value || '—'],
+        ['ODBC', (q('input[name=odbc]:checked')||{}).value || '—'],
+        ['API Access', (q('input[name=api_access]:checked')||{}).value || '—'],
+        ['Support', (q('input[name=support]:checked')||{}).value || '—'],
+
+        // Process discovery notes
+        ['Process: cart → door', (q('#api_proc_q11').value||'—')],
+        ['Pain/Challenge 1', (q('#api_proc_pain1').value||'—')],
+        ['Pain/Challenge 2 (opt)', (q('#api_proc_pain2').value||'')],
+        ['Pain/Challenge 3 (opt)', (q('#api_proc_pain3').value||'')],
+        ['Recap challenges (opt)', (q('textarea[name=api_value_recap]').value||'')]
+      ];
+
+      recap.innerHTML =
+        '<thead><tr><th>'+rows[0][0]+'</th><th>'+rows[0][1]+'</th></tr></thead>'+
+        '<tbody>'+rows.slice(1).map(function(rw){ return '<tr><td>'+rw[0]+'</td><td>'+escapeHtml(rw[1]).replace(/\n/g,'<br>')+'</td></tr>'; }).join('')+'</tbody>';
+
+    } else if(r.platform==='UI'){
+      var totalLine = '';
+      if(r.totals){
+        if(r.totals.total === 'Custom Pricing'){
+          totalLine = 'Total: Custom Pricing' + addonTotalSuffix(r.addons, r.totals);
+        } else if(typeof r.totals.total === 'number'){
+          totalLine = 'Total: $'+r.totals.total.toFixed(2)+'/mo (plan '+(r.priceText||'')+addonTotalSuffix(r.addons, r.totals)+')';
+        } else {
+          totalLine = 'Total: ' + (r.priceText || '—');
+        }
+      }
+      banner.innerHTML =
+        '<div><strong>Platform:</strong> ShipStation UI</div>'+
+        '<div><strong>Recommended Plan:</strong> '+(r.recommended || '—')+(r.priceText? ' — '+r.priceText : '')+'</div>'+
+        '<div style="margin-top:6px">'+ totalLine +'</div>'+
+        (r.addons.length ? '<div style="margin-top:6px">Add ons: '+r.addons.map(cleanAddonName).join(', ')+'</div>' : '');
+
+      driversBox.innerHTML = r.drivers.length
         ? r.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
         : '<span class="muted">No higher plan drivers detected. Selection fits the base tier.</span>';
 
-      // ==== Recap rows with ALL notes ====
       var rows2 = [
         ['Category','Answer'],
         ['Users', (r.answers.users||'—')],
-@@ -1191,7 +1325,6 @@
+        ['Shipments per month', (r.answers.shipments||'—')],
+        ['BYOA', (r.answers.byoa||'—')],
+        ['Inventory level', (r.answers.inv||'—')],
+        ['Warehouse level', (r.answers.wm||'—')],
+        ['Advanced returns', (r.answers.returns||'—')],
+        ['Unlimited rules', (r.answers.rules||'—')],
+        ['Auto Routing/Split', (r.answers.routing||'—')],
+        ['Rate Shopper', (r.answers.rates||'—')],
+        ['ODBC', (r.answers.odbc||'—')],
+        ['API Access', (r.answers.api_access||'—')],
+        ['Support', (r.answers.support||'—')],
+
+        // Discovery notes (textareas)
+        ['Products sold', (q('#ui_disc_q1').value||'—')],
+        ['Where they sell (stores)', (storeNames(window.uiStorePicker).join(', ') || '—')],
+        ['Carriers', (q('#ui_disc_carriers').value||'—')],
+        ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
+        ['Inventory notes', (q('#ui_disc_q6').value||'—')],
+        ['Returns notes', (q('#ui_disc_q7').value||'—')],
+
+        // Process discovery notes
+        ['Process: cart → door', (q('#ui_proc_q11').value||'—')],
+        ['Pain/Challenge 1', (q('#ui_proc_pain1').value||'—')],
+        ['Pain/Challenge 2 (opt)', (q('#ui_proc_pain2').value||'')],
+        ['Pain/Challenge 3 (opt)', (q('#ui_proc_pain3').value||'')],
+        ['Recap challenges (opt)', (q('textarea[name=ui_value_recap]').value||'')]
+      ];
+
+      recap.innerHTML =
+        '<thead><tr><th>'+rows2[0][0]+'</th><th>'+rows2[0][1]+'</th></tr></thead>'+
+        '<tbody>'+rows2.slice(1).map(function(rw){ return '<tr><td>'+rw[0]+'</td><td>'+escapeHtml(rw[1]).replace(/\n/g,'<br>')+'</td></tr>'; }).join('')+'</tbody>';
+    } else {
+      banner.innerHTML = '<div>Please select a platform to begin.</div>';
+      driversBox.innerHTML = '';
+      recap.innerHTML = '';
+    }
+
+    q('#sec-result').classList.add('show');
+    window.scrollTo({top:q('#sec-result').offsetTop - 12, behavior:'smooth'});
+  }
+
+  function addonTotalSuffix(addons, totals){
+    if(!addons || addons.length===0) return '';
+    if(totals && typeof totals.addonSum === 'number' && totals.addonSum>0){
+      return ' + $'+totals.addonSum.toFixed(2)+'/mo add ons';
+    }
     return '';
   }
   function cleanAddonName(tag){ return tag.split(':')[0]; }
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(m){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]);}); }
 
   // Buttons
   q('#btn-calc').addEventListener('click', render);
-@@ -1201,16 +1334,17 @@
+
+  q('#btn-reset').addEventListener('click', function(){
+    qa('input[type=radio],input[type=checkbox]').forEach(function(i){ i.checked=false; });
     q('#shipments').value = '';
     q('#api_shipments').value = '';
     qa('textarea, input[type=text]').forEach(function(t){ t.value=''; });
@@ -861,8 +1340,6 @@
     if(window.apiStorePicker){ apiStorePicker.set([]); }
     if(window.uiStorePicker){ uiStorePicker.set([]); }
 
-    [q('#sec-api'),q('#sec-api-discovery'),
-     q('#sec-ui-discovery'),
     [q('#sec-api'),q('#sec-ui-discovery'),q('#sec-api-discovery'),
      q('#sec-addons'),q('#sec-actions')].forEach(function(s){ s.classList.add('hidden'); });
 
@@ -871,21 +1348,63 @@
     q('#brandLogo').src = LOGO_DEFAULT; q('#brandLogo').alt='Auctane';
     window.scrollTo({top:0,behavior:'smooth'});
   });
-@@ -1235,8 +1369,6 @@
+
+  q('#btn-copy').addEventListener('click', function(){
+    if(!q('#sec-result').classList.contains('show')){ alert('Please click "Show Recommendation" first.'); return; }
+    var base = calcRecommendation(); if(!base.platform){ alert('Please complete the questionnaire.'); return; }
+    var lines = [];
+    function list(name, val){ lines.push('- '+name+': '+val); }
+
+    if(base.platform==='API'){
+      var a = recommendAPI();
+      lines.push('Suggested Route: ' + a.suggestion);
+      if(a.next.length){ lines.push('Next steps: ' + a.next.join(' | ')); }
+      lines.push('');
+      lines.push('Drivers:');
+      if(a.drivers.length){ a.drivers.forEach(function(d){ lines.push('- ' + d); }); } else { lines.push('- None'); }
+      lines.push('');
+      lines.push('Answers & Notes:');
+      list('Where to print labels','In their system');
+      list('Developer resources', a.answers.api_dev || '—');
       list('3PL functionality', a.answers.api_3pl || '—');
       list('Platform Elements', a.answers.api_pe || '—');
       list('Estimated shipments each month', a.answers.api_shipments || '—');
-
-      // Text notes
       list('Products sold', q('#api_disc_q1').value||'—');
       list('Where they sell (stores)', (window.apiStorePicker.selected||[]).map(function(it){return it.name;}).join(', ')||'—');
       list('BYOA', (q('input[name=byoa]:checked')||{}).value||'—');
-@@ -1273,82 +1405,80 @@
+      list('Carriers', q('#api_disc_carriers').value||'—');
+      list('International?', (q('input[name=intl]:checked')||{}).value||'—');
+      list('Inventory notes', q('#api_disc_q6').value||'—');
+      list('Inventory level', (q('input[name=inv]:checked')||{}).value||'—');
+      list('Warehouse level', (q('input[name=wm]:checked')||{}).value||'—');
+      list('Returns notes', q('#api_disc_q7').value||'—');
+      list('Advanced returns', (q('input[name=returns]:checked')||{}).value||'—');
+      list('Users', (q('input[name=users]:checked')||{}).value||'—');
+      list('Unlimited rules', (q('input[name=rules]:checked')||{}).value||'—');
+      list('Auto Routing/Split', (q('input[name=routing]:checked')||{}).value||'—');
+      list('Rate Shopper', (q('input[name=rates]:checked')||{}).value||'—');
+      list('ODBC', (q('input[name=odbc]:checked')||{}).value||'—');
+      list('API Access', (q('input[name=api_access]:checked')||{}).value||'—');
+      list('Support', (q('input[name=support]:checked')||{}).value||'—');
+      list('Process: cart → door', q('#api_proc_q11').value||'—');
+      list('Pain/Challenge 1', q('#api_proc_pain1').value||'—');
+      if(q('#api_proc_pain2').value) list('Pain/Challenge 2', q('#api_proc_pain2').value);
+      if(q('#api_proc_pain3').value) list('Pain/Challenge 3', q('#api_proc_pain3').value);
+      if(q('textarea[name=api_value_recap]').value) list('Recap challenges', q('textarea[name=api_value_recap]').value);
+
+    } else {
+      lines.push('Platform: ShipStation UI');
+      lines.push('Recommended Plan: '+base.recommended + (base.priceText? ' — '+base.priceText : ''));
+      if(base.totals){
+        if(base.totals.total === 'Custom Pricing'){ lines.push('Total: Custom Pricing' + (base.totals.addonSum? ' + $'+base.totals.addonSum.toFixed(2)+'/mo add ons' : '')); }
+        else if(typeof base.totals.total === 'number'){ lines.push('Total: $'+base.totals.total.toFixed(2)+'/mo'); }
+      }
+      lines.push('');
+      lines.push('Drivers (features that required this plan):');
+      if(base.drivers.length){ base.drivers.forEach(function(d){ lines.push('- '+d); }); } else { lines.push('- None'); }
       lines.push('');
       lines.push('Answers & Notes:');
       Object.keys(base.answers).forEach(function(k){ list(k, base.answers[k]); });
-
-      // Text notes
       list('Products sold', q('#ui_disc_q1').value||'—');
       list('Where they sell (stores)', (window.uiStorePicker.selected||[]).map(function(it){return it.name;}).join(', ')||'—');
       list('Carriers', q('#ui_disc_carriers').value||'—');
