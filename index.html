@@ -142,7 +142,7 @@
   }
 
   /* Inputs with consistent breathing room (answer text stays smaller) */
-  select, textarea, input[type=text], .tagpicker{
+  select, textarea, input[type=text], input[type=date], .tagpicker{
     width:100%;
     padding:12px;
     border-radius:10px;
@@ -588,6 +588,9 @@
       <strong>RECAP CHALLENGES AND GIVE VALUE STATEMENT</strong> – <br>“IS THERE ANYTHING ELSE I SHOULD KNOW THAT WOULD MAKE THIS TRANSITION BETTER”?</br>
       <textarea name="api_value_recap" placeholder="Optional recap…" style="margin-top:10px"></textarea>
     </div>
+    <label class="subheader" for="api_impl_date">When are you looking to get this implemented?</label>
+<input type="date" id="api_impl_date" name="api_impl_date" /> 
+
 
     <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
     <div class="checklist">
@@ -825,6 +828,9 @@
       <strong>RECAP CHALLENGES AND GIVE VALUE STATEMENT</strong> – <br>“IS THERE ANYTHING ELSE I SHOULD KNOW THAT WOULD MAKE THIS TRANSITION BETTER”?</br>
       <textarea name="ui_value_recap" placeholder="Optional recap…" style="margin-top:10px"></textarea>
     </div>
+    <label class="subheader" for="ui_impl_date">When are you looking to get this implemented?</label>
+<input type="date" id="ui_impl_date" name="ui_impl_date" />
+
 
     <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
     <div class="checklist">
