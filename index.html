@@ -408,8 +408,14 @@
         <label class="option"><input type="radio" name="byoa" value="Yes"><div><div class="opt-title">Yes</div></div></label>
       </div>
 
-      <label class="subheader" for="api_disc_carriers"><span class="question-number">5.</span> What carriers are you shipping with?</label>
-      <textarea id="api_disc_carriers" name="api_disc_carriers" placeholder="Rep notes..."></textarea>
+      <label class="subheader"><span class="question-number">5.</span> What carriers are you shipping with?</label>
+<div class="tagpicker" id="apiCarrierPicker">
+  <div class="tagchips" data-role="chips"></div>
+  <input class="taginput" type="text" placeholder="Start typing a carrier (e.g., USPS, UPS, FedEx)…" aria-label="Carrier search" />
+  <div class="suggest hidden" role="listbox"></div>
+  <div class="tagerror" aria-live="polite"></div>
+  <input type="hidden" name="api_disc_carriers" value="[]">
+</div>
 
       <label class="subheader"><span class="question-number">6.</span> Do you ship internationally?</label>
       <div class="grid cols-2">
@@ -657,8 +663,14 @@
         <label class="option"><input type="radio" name="byoa" value="Yes"><div><div class="opt-title">Yes</div></div></label>
       </div>
 
-      <label class="subheader" for="ui_disc_carriers"><span class="question-number">5.</span> What carriers are you shipping with?</label>
-      <textarea id="ui_disc_carriers" name="ui_disc_carriers" placeholder="Rep notes..."></textarea>
+<label class="subheader"><span class="question-number">5.</span> What carriers are you shipping with?</label>
+<div class="tagpicker" id="uiCarrierPicker">
+  <div class="tagchips" data-role="chips"></div>
+  <input class="taginput" type="text" placeholder="Start typing a carrier (e.g., USPS, UPS, FedEx)…" aria-label="Carrier search" />
+  <div class="suggest hidden" role="listbox"></div>
+  <div class="tagerror" aria-live="polite"></div>
+  <input type="hidden" name="ui_disc_carriers" value="[]">
+</div>
 
       <label class="subheader"><span class="question-number">6.</span> Do you ship internationally?</label>
       <div class="grid cols-2">
@@ -1061,6 +1073,48 @@
     {name:'Zoey',slug:'zoey',aliases:[]},
     {name:'Zonos',slug:'zonos',aliases:[]}
   ];
+  /* ===== Supported Carrier Integrations (new) ===== */
+var CARRIER_INTEGRATIONS = [
+  {name:'USPS',slug:'usps',aliases:[]},
+  {name:'UPS',slug:'ups',aliases:[]},
+  {name:'FedEx',slug:'fedex',aliases:[]},
+  {name:'DHL Express',slug:'dhl_express',aliases:['dhl']},
+  {name:'GlobalPost',slug:'globalpost',aliases:[]},
+  {name:'Starlinks Global',slug:'starlinks_global',aliases:[]},
+  {name:'Fulfillment by Amazon (FBA)',slug:'fba',aliases:['fulfillment by amazon','amazon fba']},
+  {name:'Parcelforce Worldwide',slug:'parcelforce_worldwide',aliases:['parcelforce']},
+  {name:'Amazon Shipping',slug:'amazon_shipping',aliases:[]},
+  {name:'DHL eCommerce',slug:'dhl_ecommerce',aliases:['dhl ecommerce solutions','dhl ecommerce']},
+  {name:'UPS UK',slug:'ups_uk',aliases:['ups united kingdom']},
+  {name:'APC',slug:'apc',aliases:['apc postal']},
+  {name:'Asendia US',slug:'asendia_us',aliases:['asendia']},
+  {name:'Better Trucks',slug:'better_trucks',aliases:[]},
+  {name:'CIRRO E-Commerce',slug:'cirro_ecommerce',aliases:['cirro','cirro e-commerce']},
+  {name:'DCL Logistics',slug:'dcl_logistics',aliases:['dcl']},
+  {name:'Direct Link US',slug:'direct_link_us',aliases:['direct link']},
+  {name:'ECMS',slug:'ecms',aliases:['ecms express']},
+  {name:'ePost Global',slug:'epost_global',aliases:['epost']},
+  {name:'FirstMile',slug:'firstmile',aliases:['first mile']},
+  {name:'Global-e',slug:'global_e',aliases:['global e']},
+  {name:'GLS US',slug:'gls_us',aliases:['gls']},
+  {name:'Landmark Global',slug:'landmark_global',aliases:['landmark']},
+  {name:'LSO',slug:'lso',aliases:['lone star overnight']},
+  {name:'Newgistics',slug:'newgistics',aliases:[]},
+  {name:'OnTrac',slug:'ontrac',aliases:[]},
+  {name:'ParcelGuard',slug:'parcelguard',aliases:['parcel guard']},
+  {name:'Pro Carrier',slug:'pro_carrier',aliases:[]},
+  {name:'Rakuten Super Logistics',slug:'rakuten_super_logistics',aliases:['rakuten logistics','rsl']},
+  {name:'SEKO LTL',slug:'seko_ltl',aliases:['seko']},
+  {name:'SEKO Omni-Channel Logistics',slug:'seko_omni_channel',aliases:['seko omni channel','seko omni']},
+  {name:'Seller Fulfilled Prime (SFP)',slug:'sfp',aliases:['seller fulfilled prime','amazon sfp']},
+  {name:'Intelcom',slug:'intelcom',aliases:[]},
+  {name:'FedEx International Connect (FIC)',slug:'fedex_international_connect',aliases:['fedex fic']},
+  {name:'ShipX Inc.',slug:'shipx_inc',aliases:['shipx']},
+  {name:'Stamps.com',slug:'stamps_com',aliases:['stamps']},
+  {name:'Tusk Logistics',slug:'tusk_logistics',aliases:['tusk']},
+  {name:'Wizmo',slug:'wizmo',aliases:[]}
+];
+
 
   // Toggle sections and swap logo
   qa('input[name=platform]').forEach(function(r){
@@ -1445,7 +1499,17 @@
     ok &= needStores(platform==='UI' ? 'uiStorePicker' : 'apiStorePicker', 'Where you sell (at least one store)');
     ok &= needSelect(platform==='UI' ? '#shipments' : '#api_shipments', 'Shipments per month');
     ok &= needRadio('byoa','BYOA selection');
-    ok &= needText(platform==='UI' ? '#ui_disc_carriers' : '#api_disc_carriers', 'Carriers');
+ok &= (function(){
+  if(platform==='UI'){
+    var has = window.uiCarrierPicker && window.uiCarrierPicker.selected && window.uiCarrierPicker.selected.length>0;
+    if(!has){ q('#uiCarrierPicker').classList.add('invalid'); }
+    return !!has;
+  }else{
+    var hasA = window.apiCarrierPicker && window.apiCarrierPicker.selected && window.apiCarrierPicker.selected.length>0;
+    if(!hasA){ q('#apiCarrierPicker').classList.add('invalid'); }
+    return !!hasA;
+  }
+})();
     ok &= needRadio('intl','International shipping selection');
     ok &= needText(platform==='UI' ? '#ui_disc_q6' : '#api_disc_q6', 'Inventory management notes');
     ok &= needRadio('inv','Inventory management level');
@@ -1525,7 +1589,10 @@
         ['Products sold', (q('#api_disc_q1').value||'—')],
         ['Where they sell (stores)', storeNames(window.apiStorePicker).join(', ') || '—'],
         ['BYOA', (q('input[name=byoa]:checked')||{}).value || '—'],
-        ['Carriers', (q('#api_disc_carriers').value||'—')],
+        ['Carriers', (function(){ 
+  var list = (window.apiCarrierPicker && window.apiCarrierPicker.selected) ? window.apiCarrierPicker.selected.map(function(it){return it.name;}) : [];
+  return list.length ? list.join(', ') : '—';
+})()],
         ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
         ['Inventory notes', (q('#api_disc_q6').value||'—')],
         ['Inventory level', (q('input[name=inv]:checked')||{}).value || '—'],
@@ -1593,7 +1660,10 @@
         // Discovery notes (textareas)
         ['Products sold', (q('#ui_disc_q1').value||'—')],
         ['Where they sell (stores)', (storeNames(window.uiStorePicker).join(', ') || '—')],
-        ['Carriers', (q('#ui_disc_carriers').value||'—')],
+        ['Carriers', (function(){ 
+  var list = (window.uiCarrierPicker && window.uiCarrierPicker.selected) ? window.uiCarrierPicker.selected.map(function(it){return it.name;}) : [];
+  return list.length ? list.join(', ') : '—';
+})()],
         ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
         ['Inventory notes', (q('#ui_disc_q6').value||'—')],
         ['Returns notes', (q('#ui_disc_q7').value||'—')],
@@ -1674,7 +1744,9 @@
       list('Products sold', q('#api_disc_q1').value||'—');
       list('Where they sell (stores)', (window.apiStorePicker.selected||[]).map(function(it){return it.name;}).join(', ')||'—');
       list('BYOA', (q('input[name=byoa]:checked')||{}).value||'—');
-      list('Carriers', q('#api_disc_carriers').value||'—');
+      list('Carriers', (window.apiCarrierPicker && window.apiCarrierPicker.selected && window.apiCarrierPicker.selected.length)
+  ? window.apiCarrierPicker.selected.map(function(it){return it.name;}).join(', ')
+  : '—');
       list('International?', (q('input[name=intl]:checked')||{}).value||'—');
       list('Inventory notes', q('#api_disc_q6').value||'—');
       list('Inventory level', (q('input[name=inv]:checked')||{}).value||'—');
@@ -1709,7 +1781,9 @@
       Object.keys(base.answers).forEach(function(k){ list(k, base.answers[k]); });
       list('Products sold', q('#ui_disc_q1').value||'—');
       list('Where they sell (stores)', (window.uiStorePicker.selected||[]).map(function(it){return it.name;}).join(', ')||'—');
-      list('Carriers', q('#ui_disc_carriers').value||'—');
+      list('Carriers', (window.uiCarrierPicker && window.uiCarrierPicker.selected && window.uiCarrierPicker.selected.length)
+  ? window.uiCarrierPicker.selected.map(function(it){return it.name;}).join(', ')
+  : '—');
       list('International?', (q('input[name=intl]:checked')||{}).value||'—');
       list('Inventory notes', q('#ui_disc_q6').value||'—');
       list('Returns notes', q('#ui_disc_q7').value||'—');
@@ -1743,7 +1817,7 @@
       extra.discovery = {
         products: q('#api_disc_q1').value||'',
         stores: (window.apiStorePicker.selected||[]).map(function(it){return it.name;}),
-        carriers: q('#api_disc_carriers').value||'',
+        carriers: (window.apiCarrierPicker && window.apiCarrierPicker.selected) ? window.apiCarrierPicker.selected.map(function(it){return it.name;}) : [],
         international: (q('input[name=intl]:checked')||{}).value||'',
         inventory_notes: q('#api_disc_q6').value||'',
         returns_notes: q('#api_disc_q7').value||'',
@@ -1757,7 +1831,7 @@
       extra.discovery = {
         products: q('#ui_disc_q1').value||'',
         stores: (window.uiStorePicker.selected||[]).map(function(it){return it.name;}),
-        carriers: q('#ui_disc_carriers').value||'',
+        carriers: (window.uiCarrierPicker && window.uiCarrierPicker.selected) ? window.uiCarrierPicker.selected.map(function(it){return it.name;}) : [],
         international: (q('input[name=intl]:checked')||{}).value||'',
         inventory_notes: q('#ui_disc_q6').value||'',
         returns_notes: q('#ui_disc_q7').value||'',
@@ -1780,7 +1854,14 @@
   if(apiPickerEl){ window.apiStorePicker = new TagPicker(apiPickerEl, { items: STORE_INTEGRATIONS }); }
   if(uiPickerEl){  window.uiStorePicker  = new TagPicker(uiPickerEl,  { items: STORE_INTEGRATIONS }); }
 
+  // === Instantiate carrier pickers for API + UI (new) ===
+var apiCarrierEl = q('#apiCarrierPicker');
+var uiCarrierEl  = q('#uiCarrierPicker');
+if(apiCarrierEl){ window.apiCarrierPicker = new TagPicker(apiCarrierEl, { items: CARRIER_INTEGRATIONS }); }
+if(uiCarrierEl){  window.uiCarrierPicker  = new TagPicker(uiCarrierEl,  { items: CARRIER_INTEGRATIONS }); }
+  
 })();
+  
   // Toggle ONLY the "Customer Declined Implementation" UI (red + Why? notes)
 function setupDeclined(prefix){
   var box  = document.getElementById(prefix + '_declined');
