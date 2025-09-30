@@ -177,6 +177,13 @@
       padding-left:18px;margin-left:6px;
     }
   }
+  /* Red state ONLY for the "Customer Declined Implementation" checkbox */
+#api_declined_wrap.declined-checked,
+#ui_declined_wrap.declined-checked{
+  border-color:#ff4d4d;
+  background:#2a0e0e;
+}
+
 
   /* Buttons (aligned right) */
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;justify-content:flex-end}
@@ -589,7 +596,13 @@
       <textarea name="api_value_recap" placeholder="Optional recap…" style="margin-top:10px"></textarea>
     </div>
     <label class="subheader" for="api_impl_date">When are you looking to get this implemented?</label>
-<input type="date" id="api_impl_date" name="api_impl_date" /> 
+<input type="date" id="api_impl_date" name="api_impl_date" />
+    <label class="option" id="api_declined_wrap">
+  <input type="checkbox" id="api_declined" name="api_declined" value="Yes" />
+  <div><div class="opt-title">Customer Declined Implementation</div></div>
+</label>
+<textarea id="api_declined_why" name="api_declined_why" placeholder="Why?" class="hidden"></textarea>
+
 
 
     <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
@@ -830,6 +843,12 @@
     </div>
     <label class="subheader" for="ui_impl_date">When are you looking to get this implemented?</label>
 <input type="date" id="ui_impl_date" name="ui_impl_date" />
+    <label class="option" id="api_declined_wrap">
+  <input type="checkbox" id="api_declined" name="api_declined" value="Yes" />
+  <div><div class="opt-title">Customer Declined Implementation</div></div>
+</label>
+<textarea id="api_declined_why" name="api_declined_why" placeholder="Why?" class="hidden"></textarea>
+
 
 
     <div class="section-title" style="margin-top:12px">Onboarding Checklist</div>
@@ -1758,6 +1777,29 @@
   if(uiPickerEl){  window.uiStorePicker  = new TagPicker(uiPickerEl,  { items: STORE_INTEGRATIONS }); }
 
 })();
+  // Toggle ONLY the "Customer Declined Implementation" UI (red + Why? notes)
+function setupDeclined(prefix){
+  var box  = document.getElementById(prefix + '_declined');
+  var wrap = document.getElementById(prefix + '_declined_wrap');
+  var why  = document.getElementById(prefix + '_declined_why');
+  if(!box || !wrap || !why) return;
+  box.addEventListener('change', function(){
+    if(box.checked){
+      wrap.classList.add('declined-checked');   // red border/bg (scoped in CSS)
+      why.classList.remove('hidden');           // reveal Why? textarea
+    } else {
+      wrap.classList.remove('declined-checked');
+      why.classList.add('hidden');
+      why.value = '';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  setupDeclined('api');
+  setupDeclined('ui');
+});
+
 </script>
 </body>
 </html>
