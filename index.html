@@ -65,29 +65,39 @@
     border-left:4px solid var(--accent);padding-left:10px
   }
 
-  /* Uniform question typography + spacing */
+  /* Uniform question typography + spacing
+     (Make green question text slightly bigger than white answers) */
   fieldset{border:none;padding:0;margin:0}
   legend,
   .subheader{
     font-weight:700;
-    font-size:15px;
+    font-size:17px;              /* bumped up so questions are slightly larger */
     color:var(--ship-green);
-    margin:var(--q-top) 0 8px; /* consistent top space before every question */
-  }
-  
-  /* Numbered question styling */
-  .subheader .question-number{
-    color:#ffffff;
+    margin:var(--q-top) 0 8px;   /* consistent top space before every question */
+    line-height:1.35;
   }
 
-  .question-number{
-    color:#ffffff;
+  /* Remove numeric question labels by default */
+  .question-number{display:none}
+
+  /* Convert lettered subnumbers (e.g., 8a., 10b.) into bullets + indent */
+  .subcontinuation{
+    position:relative;
+    padding-left:16px;           /* slight indent to the right */
+    margin-left:8px;
   }
-  
+  .subcontinuation::before{
+    content:'•';
+    position:absolute;
+    left:0;
+    top:0;
+    color:var(--ship-green);
+    font-size:18px;
+    line-height:1;
+  }
+
   /* Collapsible details for additional info */
-  .question-details{
-    margin:8px 0 16px 0;
-  }
+  .question-details{margin:8px 0 16px 0;}
   .question-details summary{
     cursor:pointer;
     color:var(--muted);
@@ -104,9 +114,7 @@
     display:inline-block;
     transition:transform .15s ease;
   }
-  .question-details[open] summary::before{
-    transform:rotate(90deg);
-  }
+  .question-details[open] summary::before{transform:rotate(90deg);}
   .question-details .details-content{
     padding:12px;
     background:#0f1624;
@@ -121,14 +129,9 @@
     margin-bottom:8px;
     color:var(--accent);
   }
-  .question-details .feature-list{
-    list-style:none;
-    padding:0;
-    margin:0;
-  }
+  .question-details .feature-list{list-style:none;padding:0;margin:0}
   .question-details .feature-list li{
-    padding:2px 0;
-    padding-left:16px;
+    padding:2px 0 2px 16px;
     position:relative;
   }
   .question-details .feature-list li::before{
@@ -138,7 +141,7 @@
     color:var(--ship-green);
   }
 
-  /* Inputs with consistent breathing room */
+  /* Inputs with consistent breathing room (answer text stays smaller) */
   select, textarea, input[type=text], .tagpicker{
     width:100%;
     padding:12px;
@@ -147,6 +150,8 @@
     background:#0f1624;
     color:var(--text);
     margin:8px 0 var(--q-gap);
+    font-size:15px;              /* answer/input text size (smaller than questions) */
+    line-height:1.45;
   }
   textarea{min-height:96px;resize:vertical}
 
@@ -196,6 +201,8 @@
     border:1px dashed #2b3a4f;background:#0d1420;
     padding:14px;border-radius:12px;margin:12px 0
   }
+  /* Make the RECAP header green inside banners (both flows) */
+  .banner > strong{ color: var(--ship-green); }
 
   /* Table */
   table{width:100%;border-collapse:collapse;font-size:14px}
@@ -262,48 +269,6 @@
     #sec-api .cols-2.extra-gap{gap:32px}
     #sec-api .solo-block{margin-top:36px;padding-top:16px}
   }
-  <style>
-  /* === Make all green question text match white answers === */
-
-  /* 1) Define what the answer typography is (adjust if needed) */
-  :root{
-    --answer-font-family: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif;
-    --answer-font-size: 16px;     /* match your white answer size */
-    --answer-line-height: 1.5;
-    --answer-font-weight: 400;    /* change to 500 if your answers are bolder */
-  }
-
-  /* 2) Ensure answers use the base typography (safe even if already set) */
-  .answer, .answer * {
-    font-family: var(--answer-font-family) !important;
-    font-size: var(--answer-font-size) !important;
-    line-height: var(--answer-line-height) !important;
-    font-weight: var(--answer-font-weight) !important;
-  }
-
-  /* 3) Force all green question text to inherit the same typography */
-  .question, .question * {
-    font-family: var(--answer-font-family) !important;
-    font-size: var(--answer-font-size) !important;
-    line-height: var(--answer-line-height) !important;
-    font-weight: var(--answer-font-weight) !important;
-  }
-
-  /* If your green text uses Tailwind-like classes, these catch-alls help */
-  .text-green, [class*="text-green"], .text-[#00A36C] {
-    font-size: inherit !important;
-    font-family: inherit !important;
-    font-weight: inherit !important;
-  }
-
-  /* If the green questions were inside headings (h2/h3), normalize them */
-  .question h1, .question h2, .question h3,
-  .question h4, .question h5, .question h6 {
-    font-size: var(--answer-font-size) !important;
-    font-weight: var(--answer-font-weight) !important;
-  }
-</style>
-    }
 </style>
 </head>
 <body>
@@ -917,6 +882,21 @@
   var qa = function(sel,ctx){return Array.prototype.slice.call((ctx||document).querySelectorAll(sel))};
   var show = function(el,yes){ el.classList.toggle('hidden', !yes); };
 
+  // === Remove numeric numbering & convert lettered subnumbers to bullets ===
+  document.addEventListener('DOMContentLoaded', function(){
+    qa('.question-number').forEach(function(span){
+      var txt = (span.textContent||'').trim();
+      var parent = span.closest('label.subheader, legend');
+      if(!parent) return;
+      // If it's something like "8a." / "10b." / "7c."
+      if(/^\d+[a-z]\.\s*$/i.test(txt)){
+        parent.classList.add('subcontinuation');
+      }
+      // Hide the original number either way
+      span.style.display = 'none';
+    });
+  });
+
   // Logos
   var LOGO_DEFAULT = 'Auctane%20BoxedLockup%20White%20RGB.png';
   var LOGO_UI  = 'ShipStation%20BoxedLockup%20White%20BrightGreen%20DeepIndigo%20RGB.png';
@@ -1077,6 +1057,9 @@
     if(s.indexOf('>')===0 || s.indexOf('20000+')===0) return '20000+';
     return s.replace(/^0+/,'');
   }
+
+  var PLAN_ORDER = ['Free','Starter','Standard','Premium'];
+  var PLAN_INDEX = {Free:0, Starter:1, Standard:2, Premium:3};
 
   /* Allowed plans (UI flow) */
   function allowed(field, value){
