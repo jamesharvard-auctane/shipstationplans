@@ -1577,46 +1577,55 @@ ok &= (function(){
         ? apiRec.drivers.map(function(d){ return '<span class="badge">'+d+'</span>'; }).join('')
         : '<span class="muted">No specific drivers selected yet.</span>';
 
-      // Recap rows with ALL notes
-      var rows = [
-        ['Discovery Question','Answer'],
-        ['Where to print labels', 'In their system'],
-        ['Developer resources',  apiRec.answers.api_dev   || '—'],
-        ['3PL functionality',    apiRec.answers.api_3pl   || '—'],
-        ['Platform Elements',    apiRec.answers.api_pe    || '—'],
-        ['Estimated shipments each month', apiRec.answers.api_shipments || '—'],
+      // Recap rows with ALL notes (now includes impl date, declined + why, onboarding)
+var rows = [
+  ['Discovery Question','Answer'],
+  ['Where to print labels', 'In their system'],
+  ['Developer resources',  apiRec.answers.api_dev   || '—'],
+  ['3PL functionality',    apiRec.answers.api_3pl   || '—'],
+  ['Platform Elements',    apiRec.answers.api_pe    || '—'],
+  ['Estimated shipments each month', apiRec.answers.api_shipments || '—'],
 
-        // Discovery notes
-        ['Products sold', (q('#api_disc_q1').value||'—')],
-        ['Where they sell (stores)', storeNames(window.apiStorePicker).join(', ') || '—'],
-        ['BYOA', (q('input[name=byoa]:checked')||{}).value || '—'],
-        ['Carriers', (function(){ 
-  var list = (window.apiCarrierPicker && window.apiCarrierPicker.selected) ? window.apiCarrierPicker.selected.map(function(it){return it.name;}) : [];
-  return list.length ? list.join(', ') : '—';
-})()],
-        ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
-        ['Inventory notes', (q('#api_disc_q6').value||'—')],
-        ['Inventory level', (q('input[name=inv]:checked')||{}).value || '—'],
-        ['Warehouse level', (q('input[name=wm]:checked')||{}).value || '—'],
-        ['Returns notes', (q('#api_disc_q7').value||'—')],
-        ['Advanced returns', (q('input[name=returns]:checked')||{}).value || '—'],
+  // Discovery notes
+  ['Products sold', (q('#api_disc_q1').value||'—')],
+  ['Where they sell (stores)', (window.apiStorePicker && window.apiStorePicker.selected ? window.apiStorePicker.selected.map(function(it){return it.name;}).join(', ') : '—')],
+  ['BYOA', (q('input[name=byoa]:checked')||{}).value || '—'],
+  ['Carriers', (window.apiCarrierPicker && window.apiCarrierPicker.selected && window.apiCarrierPicker.selected.length)
+    ? window.apiCarrierPicker.selected.map(function(it){return it.name;}).join(', ')
+    : '—'],
+  ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
+  ['Inventory notes', (q('#api_disc_q6').value||'—')],
+  ['Inventory level', (q('input[name=inv]:checked')||{}).value || '—'],
+  ['Warehouse level', (q('input[name=wm]:checked')||{}).value || '—'],
+  ['Returns notes', (q('#api_disc_q7').value||'—')],
+  ['Advanced returns', (q('input[name=returns]:checked')||{}).value || '—'],
 
-        // Remaining selections
-        ['Users', (q('input[name=users]:checked')||{}).value || '—'],
-        ['Unlimited rules', (q('input[name=rules]:checked')||{}).value || '—'],
-        ['Auto Routing/Split', (q('input[name=routing]:checked')||{}).value || '—'],
-        ['Rate Shopper', (q('input[name=rates]:checked')||{}).value || '—'],
-        ['ODBC', (q('input[name=odbc]:checked')||{}).value || '—'],
-        ['API Access', (q('input[name=api_access]:checked')||{}).value || '—'],
-        ['Support', (q('input[name=support]:checked')||{}).value || '—'],
+  // Remaining selections
+  ['Users', (q('input[name=users]:checked')||{}).value || '—'],
+  ['Unlimited rules', (q('input[name=rules]:checked')||{}).value || '—'],
+  ['Auto Routing/Split', (q('input[name=routing]:checked')||{}).value || '—'],
+  ['Rate Shopper', (q('input[name=rates]:checked')||{}).value || '—'],
+  ['ODBC', (q('input[name=odbc]:checked')||{}).value || '—'],
+  ['API Access', (q('input[name=api_access]:checked')||{}).value || '—'],
+  ['Support', (q('input[name=support]:checked')||{}).value || '—'],
 
-        // Process discovery notes
-        ['Process: cart → door', (q('#api_proc_q11').value||'—')],
-        ['Pain/Challenge 1', (q('#api_proc_pain1').value||'—')],
-        ['Pain/Challenge 2 (opt)', (q('#api_proc_pain2').value||'')],
-        ['Pain/Challenge 3 (opt)', (q('#api_proc_pain3').value||'')],
-        ['Recap challenges (opt)', (q('textarea[name=api_value_recap]').value||'')]
-      ];
+  // Process discovery notes
+  ['Process: cart → door', (q('#api_proc_q11').value||'—')],
+  ['Pain/Challenge 1', (q('#api_proc_pain1').value||'—')],
+  ['Pain/Challenge 2 (opt)', (q('#api_proc_pain2').value||'')],
+  ['Pain/Challenge 3 (opt)', (q('#api_proc_pain3').value||'')],
+  ['Recap challenges (opt)', (q('textarea[name=api_value_recap]').value||'')],
+
+  // Implementation + Declined + Onboarding
+  ['Target implementation date', (function(){ var el=q('#api_impl_date'); return (el && el.value)? el.value : '—'; })()],
+  ['Customer declined implementation', (q('#api_declined') && q('#api_declined').checked) ? 'Yes' : 'No'],
+  ['Why (declined)', (q('#api_declined') && q('#api_declined').checked && q('#api_declined_why')) ? (q('#api_declined_why').value || '—') : '—'],
+  ['Onboarding checklist', (function(){
+     var picked = qa('#sec-api-discovery input[name="onb"]:checked').map(function(c){ return c.value; });
+     return picked.length ? picked.join(', ') : '—';
+  })()]
+];
+
 
       recap.innerHTML =
         '<thead><tr><th>'+rows[0][0]+'</th><th>'+rows[0][1]+'</th></tr></thead>'+
@@ -1644,38 +1653,46 @@ ok &= (function(){
         : '<span class="muted">No higher plan drivers detected. Selection fits the base tier.</span>';
 
       var rows2 = [
-        ['Category','Answer'],
-        ['Users', (r.answers.users||'—')],
-        ['Shipments per month', (r.answers.shipments||'—')],
-        ['BYOA', (r.answers.byoa||'—')],
-        ['Inventory level', (r.answers.inv||'—')],
-        ['Warehouse level', (r.answers.wm||'—')],
-        ['Advanced returns', (r.answers.returns||'—')],
-        ['Unlimited rules', (r.answers.rules||'—')],
-        ['Auto Routing/Split', (r.answers.routing||'—')],
-        ['Rate Shopper', (r.answers.rates||'—')],
-        ['ODBC', (r.answers.odbc||'—')],
-        ['API Access', (r.answers.api_access||'—')],
-        ['Support', (r.answers.support||'—')],
+  ['Category','Answer'],
+  ['Users', (r.answers.users||'—')],
+  ['Shipments per month', (r.answers.shipments||'—')],
+  ['BYOA', (r.answers.byoa||'—')],
+  ['Inventory level', (r.answers.inv||'—')],
+  ['Warehouse level', (r.answers.wm||'—')],
+  ['Advanced returns', (r.answers.returns||'—')],
+  ['Unlimited rules', (r.answers.rules||'—')],
+  ['Auto Routing/Split', (r.answers.routing||'—')],
+  ['Rate Shopper', (r.answers.rates||'—')],
+  ['ODBC', (r.answers.odbc||'—')],
+  ['API Access', (r.answers.api_access||'—')],
+  ['Support', (r.answers.support||'—')],
 
-        // Discovery notes (textareas)
-        ['Products sold', (q('#ui_disc_q1').value||'—')],
-        ['Where they sell (stores)', (storeNames(window.uiStorePicker).join(', ') || '—')],
-        ['Carriers', (function(){ 
-  var list = (window.uiCarrierPicker && window.uiCarrierPicker.selected) ? window.uiCarrierPicker.selected.map(function(it){return it.name;}) : [];
-  return list.length ? list.join(', ') : '—';
-})()],
-        ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
-        ['Inventory notes', (q('#ui_disc_q6').value||'—')],
-        ['Returns notes', (q('#ui_disc_q7').value||'—')],
+  // Discovery notes
+  ['Products sold', (q('#ui_disc_q1').value||'—')],
+  ['Where they sell (stores)', (window.uiStorePicker && window.uiStorePicker.selected ? window.uiStorePicker.selected.map(function(it){return it.name;}).join(', ') : '—')],
+  ['Carriers', (window.uiCarrierPicker && window.uiCarrierPicker.selected && window.uiCarrierPicker.selected.length)
+    ? window.uiCarrierPicker.selected.map(function(it){return it.name;}).join(', ')
+    : '—'],
+  ['International?', (q('input[name=intl]:checked')||{}).value || '—'],
+  ['Inventory notes', (q('#ui_disc_q6').value||'—')],
+  ['Returns notes', (q('#ui_disc_q7').value||'—')],
 
-        // Process discovery notes
-        ['Process: cart → door', (q('#ui_proc_q11').value||'—')],
-        ['Pain/Challenge 1', (q('#ui_proc_pain1').value||'—')],
-        ['Pain/Challenge 2 (opt)', (q('#ui_proc_pain2').value||'')],
-        ['Pain/Challenge 3 (opt)', (q('#ui_proc_pain3').value||'')],
-        ['Recap challenges (opt)', (q('textarea[name=ui_value_recap]').value||'')]
-      ];
+  // Process discovery notes
+  ['Process: cart → door', (q('#ui_proc_q11').value||'—')],
+  ['Pain/Challenge 1', (q('#ui_proc_pain1').value||'—')],
+  ['Pain/Challenge 2 (opt)', (q('#ui_proc_pain2').value||'')],
+  ['Pain/Challenge 3 (opt)', (q('#ui_proc_pain3').value||'')],
+  ['Recap challenges (opt)', (q('textarea[name=ui_value_recap]').value||'')],
+
+  // Implementation + Declined + Onboarding
+  ['Target implementation date', (function(){ var el=q('#ui_impl_date'); return (el && el.value)? el.value : '—'; })()],
+  ['Customer declined implementation', (q('#ui_declined') && q('#ui_declined').checked) ? 'Yes' : 'No'],
+  ['Why (declined)', (q('#ui_declined') && q('#ui_declined').checked && q('#ui_declined_why')) ? (q('#ui_declined_why').value || '—') : '—'],
+  ['Onboarding checklist', (function(){
+     var picked = qa('#sec-ui-discovery input[name="onb"]:checked').map(function(c){ return c.value; });
+     return picked.length ? picked.join(', ') : '—';
+  })()]
+];
 
       recap.innerHTML =
         '<thead><tr><th>'+rows2[0][0]+'</th><th>'+rows2[0][1]+'</th></tr></thead>'+
@@ -1712,6 +1729,18 @@ ok &= (function(){
     q('#ui-error').classList.add('hidden'); q('#api-error').classList.add('hidden');
     if(window.apiStorePicker){ apiStorePicker.set([]); }
     if(window.uiStorePicker){ uiStorePicker.set([]); }
+    ['api','ui'].forEach(function(prefix){
+  var wrap = q('#'+prefix+'_declined_wrap');
+  var box  = q('#'+prefix+'_declined');
+  var why  = q('#'+prefix+'_declined_why');
+  if(wrap && box && why){
+    wrap.classList.remove('declined-checked');
+    box.checked = false;
+    why.classList.add('hidden');
+    why.value = '';
+  }
+});
+
 
     [q('#sec-api'),q('#sec-ui-discovery'),q('#sec-api-discovery'),
      q('#sec-addons'),q('#sec-actions')].forEach(function(s){ s.classList.add('hidden'); });
@@ -1766,6 +1795,17 @@ ok &= (function(){
       if(q('#api_proc_pain2').value) list('Pain/Challenge 2', q('#api_proc_pain2').value);
       if(q('#api_proc_pain3').value) list('Pain/Challenge 3', q('#api_proc_pain3').value);
       if(q('textarea[name=api_value_recap]').value) list('Recap challenges', q('textarea[name=api_value_recap]').value);
+      list('Target implementation date', (function(){ var el=q('#api_impl_date'); return (el&&el.value)? el.value : '—'; })());
+(function(){
+  var d = (q('#api_declined') && q('#api_declined').checked);
+  list('Customer declined implementation', d ? 'Yes' : 'No');
+  if(d) list('Why (declined)', (q('#api_declined_why') && q('#api_declined_why').value) ? q('#api_declined_why').value : '—');
+})();
+list('Onboarding checklist', (function(){
+  var picked = qa('#sec-api-discovery input[name="onb"]:checked').map(function(c){ return c.value; });
+  return picked.length ? picked.join(', ') : '—';
+})());
+
 
     } else {
       lines.push('Platform: ShipStation UI');
@@ -1793,6 +1833,17 @@ ok &= (function(){
       if(q('#ui_proc_pain2').value) list('Pain/Challenge 2', q('#ui_proc_pain2').value);
       if(q('#ui_proc_pain3').value) list('Pain/Challenge 3', q('#ui_proc_pain3').value);
       if(q('textarea[name=ui_value_recap]').value) list('Recap challenges', q('textarea[name=ui_value_recap]').value);
+      list('Target implementation date', (function(){ var el=q('#ui_impl_date'); return (el&&el.value)? el.value : '—'; })());
+(function(){
+  var d = (q('#ui_declined') && q('#ui_declined').checked);
+  list('Customer declined implementation', d ? 'Yes' : 'No');
+  if(d) list('Why (declined)', (q('#ui_declined_why') && q('#ui_declined_why').value) ? q('#ui_declined_why').value : '—');
+})();
+list('Onboarding checklist', (function(){
+  var picked = qa('#sec-ui-discovery input[name="onb"]:checked').map(function(c){ return c.value; });
+  return picked.length ? picked.join(', ') : '—';
+})());
+
 
       if(base.addons.length){ lines.push('Add ons: ' + base.addons.map(cleanAddonName).join(', ')); }
     }
@@ -1815,33 +1866,41 @@ ok &= (function(){
     // Include discovery/process note fields in JSON too
     var extra = {};
     if(base.platform==='API'){
-      extra.discovery = {
-        products: q('#api_disc_q1').value||'',
-        stores: (window.apiStorePicker.selected||[]).map(function(it){return it.name;}),
-        carriers: (window.apiCarrierPicker && window.apiCarrierPicker.selected) ? window.apiCarrierPicker.selected.map(function(it){return it.name;}) : [],
-        international: (q('input[name=intl]:checked')||{}).value||'',
-        inventory_notes: q('#api_disc_q6').value||'',
-        returns_notes: q('#api_disc_q7').value||'',
-        process: q('#api_proc_q11').value||'',
-        pain1: q('#api_proc_pain1').value||'',
-        pain2: q('#api_proc_pain2').value||'',
-        pain3: q('#api_proc_pain3').value||'',
-        recap_value: q('textarea[name=api_value_recap]').value||''
-      };
+extra.discovery = {
+  products: q('#api_disc_q1').value||'',
+  stores: (window.apiStorePicker && window.apiStorePicker.selected ? window.apiStorePicker.selected.map(function(it){return it.name;}) : []),
+  carriers: (window.apiCarrierPicker && window.apiCarrierPicker.selected ? window.apiCarrierPicker.selected.map(function(it){return it.name;}) : []),
+  international: (q('input[name=intl]:checked')||{}).value||'',
+  inventory_notes: q('#api_disc_q6').value||'',
+  returns_notes: q('#api_disc_q7').value||'',
+  process: q('#api_proc_q11').value||'',
+  pain1: q('#api_proc_pain1').value||'',
+  pain2: q('#api_proc_pain2').value||'',
+  pain3: q('#api_proc_pain3').value||'',
+  recap_value: q('textarea[name=api_value_recap]').value||'',
+  impl_date: (function(){ var el=q('#api_impl_date'); return (el&&el.value)? el.value : ''; })(),
+  declined: !!(q('#api_declined') && q('#api_declined').checked),
+  declined_why: (function(){ var el=q('#api_declined_why'); return (el&&el.value)? el.value : ''; })(),
+  onboarding: qa('#sec-api-discovery input[name="onb"]:checked').map(function(c){ return c.value; })
+};
     } else if(base.platform==='UI'){
-      extra.discovery = {
-        products: q('#ui_disc_q1').value||'',
-        stores: (window.uiStorePicker.selected||[]).map(function(it){return it.name;}),
-        carriers: (window.uiCarrierPicker && window.uiCarrierPicker.selected) ? window.uiCarrierPicker.selected.map(function(it){return it.name;}) : [],
-        international: (q('input[name=intl]:checked')||{}).value||'',
-        inventory_notes: q('#ui_disc_q6').value||'',
-        returns_notes: q('#ui_disc_q7').value||'',
-        process: q('#ui_proc_q11').value||'',
-        pain1: q('#ui_proc_pain1').value||'',
-        pain2: q('#ui_proc_pain2').value||'',
-        pain3: q('#ui_proc_pain3').value||'',
-        recap_value: q('textarea[name=ui_value_recap]').value||''
-      };
+extra.discovery = {
+  products: q('#ui_disc_q1').value||'',
+  stores: (window.uiStorePicker && window.uiStorePicker.selected ? window.uiStorePicker.selected.map(function(it){return it.name;}) : []),
+  carriers: (window.uiCarrierPicker && window.uiCarrierPicker.selected ? window.uiCarrierPicker.selected.map(function(it){return it.name;}) : []),
+  international: (q('input[name=intl]:checked')||{}).value||'',
+  inventory_notes: q('#ui_disc_q6').value||'',
+  returns_notes: q('#ui_disc_q7').value||'',
+  process: q('#ui_proc_q11').value||'',
+  pain1: q('#ui_proc_pain1').value||'',
+  pain2: q('#ui_proc_pain2').value||'',
+  pain3: q('#ui_proc_pain3').value||'',
+  recap_value: q('textarea[name=ui_value_recap]').value||'',
+  impl_date: (function(){ var el=q('#ui_impl_date'); return (el&&el.value)? el.value : ''; })(),
+  declined: !!(q('#ui_declined') && q('#ui_declined').checked),
+  declined_why: (function(){ var el=q('#ui_declined_why'); return (el&&el.value)? el.value : ''; })(),
+  onboarding: qa('#sec-ui-discovery input[name="onb"]:checked').map(function(c){ return c.value; })
+};
     }
     payload.extra_notes = extra;
 
